@@ -6,7 +6,7 @@ export function MainnetConfig() {
     fcl
       .config()
       .put("env", "mainnet")
-      .put("accessNode.api", "https://access-mainnet-beta.onflow.org")
+      .put("accessNode.api", "https://rest-mainnet.onflow.org")
       .put("discovery.wallet", "https://fcl-discovery.onflow.org/authn")
       .put("fcl.eventsPollRate", 2500)
       .put("0xLockedTokens", "0x8d0e87b65159ae63")
@@ -14,6 +14,8 @@ export function MainnetConfig() {
       .put("0xFUSD", "0x3c5959b568896393")
       .put("contract.LockedTokens", "0x8d0e87b65159ae63")
       .put("contract.FungibleToken", "0xf233dcee88fe0abe")
+      .put('discovery.wallet.method',"POP/RPC")
+
   }, [])
   return null
 }
