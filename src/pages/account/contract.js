@@ -1,6 +1,6 @@
 import * as fcl from "@onflow/fcl"
 import * as t from "@onflow/types"
-import {Suspense, useState, useEffect} from "react"
+import {Suspense,useMemo, useState, useEffect} from "react"
 import {useParams} from "react-router-dom"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useAccount} from "../../hooks/use-account"
@@ -99,7 +99,8 @@ const Footer = ({name, code}) => {
 export function Page() {
   const {address, name} = useParams()
   const acct = useAccount(address)
-  const contracts = acct?.contracts ?? {}
+  const contracts = useMemo(() => acct?.contracts ?? {}, [acct])
+
   const [code, setCode] = useState(contracts[name])
   useEffect(() => {
     setCode(contracts[name])

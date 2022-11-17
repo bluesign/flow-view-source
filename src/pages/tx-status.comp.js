@@ -21,13 +21,14 @@ export function TxStatus() {
   const [txStatus, setTxStatus] = useState(null)
   const [txInfo, setTxInfo] = useState(null)
 
-  useEffect(() => fcl.tx(txId).subscribe(setTxStatus))
+  useEffect(() => fcl.tx(txId).subscribe(setTxStatus), [txId])
+ 
   useEffect(() => {
     fcl
       .send([fcl.getTransaction(txId)])
       .then(fcl.decode)
       .then(setTxInfo)
-  }, [])
+  }, [txId])
 
   if (txStatus == null || txInfo == null) {
     return (
