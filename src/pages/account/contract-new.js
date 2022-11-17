@@ -5,7 +5,7 @@ import {Base} from "../../comps/base"
 import * as fcl from "@onflow/fcl"
 import * as t from "@onflow/types"
 import {Wat} from "../../comps/wat"
-import {Editor} from "../../comps/editor"
+import {CodeEditor} from "../../comps/editor"
 import {Bar, Icon, Pad, Button, Input, Label} from "../../comps/bar"
 import {SideBar} from "./sidebar"
 import {useCurrentUser} from "../../hooks/use-current-user"
@@ -110,7 +110,7 @@ export function Page() {
 
   return (
     <Base sidebar={<SideBar />} header={<Header />} footer={<Footer code={code} name={name} />}>
-      <Editor key="NEW_CONTRACT" name="NEW_CONTRACT" code={code} onChange={setCode} />
+      <CodeEditor key="NEW_CONTRACT" name="NEW_CONTRACT" code={code} onChange={setCode} />
     </Base>
   )
 }

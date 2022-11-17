@@ -3,7 +3,7 @@ import * as fcl from "@onflow/fcl"
 import {useParams} from "react-router-dom"
 import {Root} from "../styles/root.comp"
 import {H1, H3, Muted, Json, Pre, List, ListItem} from "../styles/text.comp"
-import {Editor} from "../comps/editor"
+import {CodeEditor} from "../comps/editor"
 import {withPrefix} from "../util/address.util"
 
 function fmtStatus(status) {
@@ -74,7 +74,7 @@ export function TxStatus() {
           <ListItem label="Payer" value={withPrefix(txInfo?.payer)} />
           <hr />
           <ListItem label="Cadence">
-            <Editor key="cadence-script" code={txInfo?.script} name="cadence-script" />
+            <CodeEditor key="cadence-script" code={txInfo?.script} name="cadence-script" />
           </ListItem>
           <hr />
           <ListItem label="Arguments">

@@ -7,7 +7,7 @@ import {useAccount} from "../../hooks/use-account"
 import {Base} from "../../comps/base"
 import {Wat} from "../../comps/wat"
 import {SideBar} from "./sidebar"
-import {Editor} from "../../comps/editor"
+import {CodeEditor} from "../../comps/editor"
 import {Bar, Button, Pad, Icon, Label} from "../../comps/bar"
 import {useTx, IDLE} from "../../hooks/use-tx.hook"
 import {Roll} from "../../styles/text.comp"
@@ -108,7 +108,9 @@ export function Page() {
 
   return (
     <Base sidebar={<SideBar />} header={<Header />} footer={<Footer name={name} code={code} />}>
-      <Editor key={name} code={code} onChange={setCode} name={name} />
+      <div id="editor">
+      <CodeEditor key={name} code={code} onChange={setCode} name={name} />
+      </div>
     </Base>
   )
 }
