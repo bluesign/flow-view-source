@@ -1,7 +1,6 @@
 import styled from "styled-components"
 import React, { useEffect, useRef, useState } from 'react';
-import Editor from "@monaco-editor/react";
-import loader from "@monaco-editor/loader";
+import Editor,  { useMonaco } from "@monaco-editor/react";
 
 
 export const EditorContainer = styled.div`
@@ -76,17 +75,34 @@ export const EditorContainer = styled.div`
 
 const noop = () => {}
 
-function editorDidMount(){
-}
+
 export function CodeEditor({code = "", onChange = noop, name = "RAWR"}) {
-       
+const monaco = useMonaco();
+  
+  useEffect(() => {
+    if (monaco) {
+
+        monaco.editor.defineTheme('cadenceTheme', {
+            base: 'vs-dark',
+            inherit: true,
+            rules: [
+                { token: 'custom-address', foreground: 'ff0000', fontStyle: 'bold' },
+            ],
+            colors: {
+                //'editor.foreground': '#FF0000'
+            }
+        });
+                
+    }
+  }, [monaco]);
+    if (!monaco) return null;
     return (
       <Editor
          height="90vh"
         language="rust"
-        theme="vs-dark"
+        theme="cadenceTheme"
         value={code}
-        editorDidMount={editorDidMount}
+        onChange={onChange}
       />
     )
 }

@@ -17,7 +17,7 @@ const Footer = styled.div`
 const Scroll = styled.div`
   overflow: scroll;
   flex: 1;
-  width: 240px;
+  width: 200px;
 `
 
 const Inner = styled.div`
