@@ -11,6 +11,7 @@ import {SideBar} from "./sidebar"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useTx, IDLE} from "../../hooks/use-tx.hook"
 import {Roll} from "../../styles/text.comp"
+import {withPrefix} from "../../util/address.util"
 
 const Header = () => {
   const {env, address} = useParams()
@@ -25,12 +26,12 @@ const Header = () => {
         },
         {label: "account"},
         {
-          to: `/${env}/account/${fcl.withPrefix(address)}`,
-          label: fcl.withPrefix(address),
+          to: `/${env}/account/${withPrefix(address)}`,
+          label: withPrefix(address),
         },
         {label: "contract"},
         {
-          to: `/${env}/account/${fcl.withPrefix(address)}/contract/new`,
+          to: `/${env}/account/${withPrefix(address)}/contract/new`,
           label: "new",
         },
       ]}
@@ -60,7 +61,7 @@ function Footer({code, name}) {
     {
       async onSuccess() {
         await acct.refetch()
-        history.push(`/${params.env}/account/${fcl.withPrefix(params.address)}/contract/${name}`)
+        history.push(`/${params.env}/account/${withPrefix(params.address)}/contract/${name}`)
       },
     }
   )
@@ -103,7 +104,7 @@ export function Page() {
     setName(code.match(/(?<access>pub|access\(all\)) contract (?<name>\w+)/)?.groups?.name ?? "")
   }, [code])
 
-  const IS_CURRENT_USER = fcl.withPrefix(user.addr) === fcl.withPrefix(params.address)
+  const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(params.address)
 
   if (!IS_CURRENT_USER) return <div>Sadly No</div>
 

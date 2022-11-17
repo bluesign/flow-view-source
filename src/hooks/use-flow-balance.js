@@ -1,5 +1,6 @@
 import * as fcl from "@onflow/fcl"
 import swr, {mutate} from "swr"
+import {withPrefix} from "../util/address.util"
 
 const PATH = "/public/flowTokenBalance"
 const TICKER = "FLOW"
@@ -7,7 +8,7 @@ const FN_NAME = "useFlowBalance"
 const ZERO = "0.00000000"
 
 function key(address) {
-  address = fcl.withPrefix(address)
+  address = withPrefix(address)
   return `/${TICKER}/${address}/balance`
 }
 
@@ -16,7 +17,7 @@ export function refetch(address) {
 }
 
 export function useFlowBalance(address) {
-  address = fcl.withPrefix(address)
+  address = withPrefix(address)
 
   const {data, error} = swr(key(address), async () => {
     if (address == null) return `${ZERO} ${TICKER}`

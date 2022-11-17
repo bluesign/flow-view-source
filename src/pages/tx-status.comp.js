@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom"
 import {Root} from "../styles/root.comp"
 import {H1, H3, Muted, Json, Pre, List, ListItem} from "../styles/text.comp"
 import {Editor} from "../comps/editor"
+import {withPrefix} from "../util/address.util"
 
 function fmtStatus(status) {
   if (status === 0) return "Unknown"
@@ -59,17 +60,17 @@ export function TxStatus() {
       <div>
         <H3>Details</H3>
         <List>
-          <ListItem label="Proposer" value={fcl.withPrefix(txInfo?.proposalKey?.address)} />
+          <ListItem label="Proposer" value={withPrefix(txInfo?.proposalKey?.address)} />
           {txInfo?.authorizers?.length >= 1 && (
             <ListItem label="AuthAccounts">
               <List>
                 {txInfo?.authorizers?.map((d, i) => (
-                  <ListItem key={i} value={fcl.withPrefix(d)} />
+                  <ListItem key={i} value={withPrefix(d)} />
                 ))}
               </List>
             </ListItem>
           )}
-          <ListItem label="Payer" value={fcl.withPrefix(txInfo?.payer)} />
+          <ListItem label="Payer" value={withPrefix(txInfo?.payer)} />
           <hr />
           <ListItem label="Cadence">
             <Editor key="cadence-script" code={txInfo?.script} name="cadence-script" />

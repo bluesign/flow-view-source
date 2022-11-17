@@ -1,10 +1,11 @@
 import * as fcl from "@onflow/fcl"
 import swr, {mutate} from "swr"
+import {withPrefix} from "../util/address.util"
 
 const ZERO = {capacity: 1, used: 1, available: 1}
 
 function key(address) {
-  address = fcl.withPrefix(address)
+  address = withPrefix(address)
   return `/ACCOUNT/${address}/storage`
 }
 
@@ -13,7 +14,7 @@ export function refetch(address) {
 }
 
 export function useAccountStorage(address) {
-  address = fcl.withPrefix(address)
+  address = withPrefix(address)
 
   const {data, error} = swr(key(address), async () => {
     if (address == null) return ZERO

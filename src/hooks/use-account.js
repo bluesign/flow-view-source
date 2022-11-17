@@ -1,5 +1,6 @@
 import {atomFamily, selectorFamily, useRecoilState} from "recoil"
 import * as fcl from "@onflow/fcl"
+import {withPrefix} from "../util/address.util"
 
 export const IDLE = "IDLE"
 export const PROCESSING = "PROCESSING"
@@ -30,7 +31,7 @@ export const fsm = atomFamily({
 })
 
 export function useAccount(address) {
-  address = fcl.withPrefix(address)
+  address = withPrefix(address)
   const [$data, setData] = useRecoilState(data(address))
   const [$status, setStatus] = useRecoilState(fsm(address))
 

@@ -11,7 +11,7 @@ function WithAuth() {
 
   return (
     <Bar>
-      <Button circle as={Link} to={url}>
+      <Button circle="true" as={Link} to={url}>
         <Icon icon="ghost" />
       </Button>
       <Label as={Link} to={url}>
@@ -24,7 +24,7 @@ function WithAuth() {
 function SansAuth() {
   return (
     <Bar>
-      <Button fill onClick={fcl.authenticate}>
+      <Button fill="true" onClick={fcl.authenticate}>
         <Pad>Authenticate</Pad>
         <Icon icon="ghost" />
       </Button>
@@ -51,7 +51,7 @@ export function AltMe() {
     <SansAuth />
   ) : (
     <Bar>
-      <Button fill subtle onClick={fcl.unauthenticate}>
+      <Button fill="true" subtle onClick={fcl.unauthenticate}>
         <Pad>Sign Out</Pad>
         <Icon icon="sign-out-alt" />
       </Button>

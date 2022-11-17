@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom"
 import {Base} from "../../comps/base"
-import {withPrefix} from "@onflow/fcl"
+import {withPrefix} from "../../../src/util/address.util"
 import {Wat} from "../../comps/wat"
 import {SideBar} from "./sidebar"
 import {Group, Item} from "../../comps/sidebar"
@@ -10,8 +10,9 @@ import {useFusdBalance} from "../../hooks/use-fusd-balance"
 
 const Header = () => {
   const {env, address} = useParams()
+  
 
-  return (
+    return (
     <Wat
       icon="ghost"
       parts={[

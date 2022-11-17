@@ -1,4 +1,3 @@
-import * as fcl from "@onflow/fcl"
 import {useParams} from "react-router-dom"
 import {Base} from "../../comps/base"
 import {Bad} from "../../styles/text.comp"
@@ -6,6 +5,7 @@ import {Wat} from "../../comps/wat"
 import {SideBar} from "./sidebar"
 import {Group, Item} from "../../comps/sidebar"
 import {useAccountKeys} from "../../hooks/use-account-keys"
+import {withPrefix} from "../../util/address.util"
 
 const Header = () => {
   const {env, address} = useParams()
@@ -20,10 +20,10 @@ const Header = () => {
         },
         {label: "account"},
         {
-          to: `/${env}/account/${fcl.withPrefix(address)}`,
-          label: fcl.withPrefix(address),
+          to: `/${env}/account/${withPrefix(address)}`,
+          label: withPrefix(address),
         },
-        {label: "keys", to: `/${env}/account/${fcl.withPrefix(address)}/keys`},
+        {label: "keys", to: `/${env}/account/${withPrefix(address)}/keys`},
       ]}
     />
   )

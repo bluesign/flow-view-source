@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { useState } from "react"
-import { H1, H2, Muted, Good } from "../styles/text.comp"
+import { H1, Good } from "../styles/text.comp"
 
 const Root = styled.div`
   position: absolute;

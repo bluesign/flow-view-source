@@ -1,5 +1,6 @@
 import * as fcl from "@onflow/fcl"
 import swr, {mutate} from "swr"
+import {withPrefix} from "../util/address.util"
 
 const PATH = "/public/fusdBalance"
 const TICKER = "FUSD"
@@ -7,7 +8,7 @@ const FN_NAME = "useFusdBalance"
 const ZERO = "0.00000000"
 
 function key(address) {
-  address = fcl.withPrefix(address)
+  address = withPrefix(address)
   return `/${TICKER}/${address}/balance`
 }
 
@@ -16,7 +17,7 @@ export function refetch(address) {
 }
 
 export function useFusdBalance(address) {
-  address = fcl.withPrefix(address)
+  address = withPrefix(address)
 
   const {data, error} = swr(key(address), async () => {
     if (address == null) return `${ZERO} ${TICKER}`

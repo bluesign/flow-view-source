@@ -1,12 +1,12 @@
-import * as fcl from "@onflow/fcl"
 import {NavLink, Link, useParams} from "react-router-dom"
 import {Item, Group} from "../../../comps/sidebar"
 import {useFlowBalance} from "../../../hooks/use-flow-balance"
 import {useFusdBalance} from "../../../hooks/use-fusd-balance"
 import {useAccountKeys} from "../../../hooks/use-account-keys"
 import {useAccountStorage} from "../../../hooks/use-account-storage"
+import {withPrefix} from "../../../util/address.util"
 
-const accountUrl = params => `/${params.env}/account/${fcl.withPrefix(params.address)}`
+const accountUrl = params => `/${params.env}/account/${withPrefix(params.address)}`
 
 function storageCapacity(storage) {
   let used = storage?.used ?? 1
@@ -23,7 +23,7 @@ export function Account() {
 
   return (
     <Group
-      title={fcl.withPrefix(params.address)}
+      title={withPrefix(params.address)}
       icon="ghost"
       exact
       as={NavLink}

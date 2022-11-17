@@ -49,10 +49,10 @@ ReactDOM.render(
           <Route exact path="/:env/account/Fx:address/contract/new" component={AccountContractNew} />
           <Route exact path="/:env/account/Fx:address/contract/:name" component={AccountContract} />
 
-          <Route exact path="/:env/account/0x:address" component={Account} />
-          <Route exact path="/:env/account/0x:address/keys" component={AccountKeys}/>
-          <Route exact path="/:env/account/0x:address/contract/new" component={AccountContractNew} />
-          <Route exact path="/:env/account/0x:address/contract/:name" component={AccountContract} />
+          <Route exact path="/:env/account/:address" component={Account} />
+          <Route exact path="/:env/account/:address/keys" component={AccountKeys}/>
+          <Route exact path="/:env/account/:address/contract/new" component={AccountContractNew} />
+          <Route exact path="/:env/account/:address/contract/:name" component={AccountContract} />
 
           <Route exact path="/mainnet/tx/:txId" component={TxStatus} />
           <Route exact path="/testnet/tx/:txId" component={TxStatus} />

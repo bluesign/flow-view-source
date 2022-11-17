@@ -11,6 +11,7 @@ import {Editor} from "../../comps/editor"
 import {Bar, Button, Pad, Icon, Label} from "../../comps/bar"
 import {useTx, IDLE} from "../../hooks/use-tx.hook"
 import {Roll} from "../../styles/text.comp"
+import {withPrefix} from "../../util/address.util"
 
 const Header = () => {
   const {env, address, name} = useParams()
@@ -24,12 +25,12 @@ const Header = () => {
         },
         {label: "account"},
         {
-          to: `/${env}/account/${fcl.withPrefix(address)}`,
-          label: fcl.withPrefix(address),
+          to: `/${env}/account/${withPrefix(address)}`,
+          label: withPrefix(address),
         },
         {label: "contract"},
         {
-          to: `/${env}/account/${fcl.withPrefix(address)}/contract/${name}`,
+          to: `/${env}/account/${withPrefix(address)}/contract/${name}`,
           label: name,
         },
       ]}
@@ -63,7 +64,7 @@ const Footer = ({name, code}) => {
     }
   )
 
-  const IS_CURRENT_USER = fcl.withPrefix(user.addr) === fcl.withPrefix(params.address)
+  const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(params.address)
   if (!IS_CURRENT_USER) return null
 
   const saveContract = () => {
