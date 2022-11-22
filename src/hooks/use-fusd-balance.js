@@ -22,7 +22,7 @@ export function useFusdBalance(address) {
   const {data, error} = swr(key(address), async () => {
     if (address == null) return `${ZERO} ${TICKER}`
 
-    await new Promise(r => setTimeout(r, 1))
+    await new Promise(r => setTimeout(r,50))
     return fcl
       .query({
         args: (arg, t) => [arg(address, t.Address)],

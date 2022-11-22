@@ -1,43 +1,29 @@
 import {Suspense, useState, useEffect} from "react"
 import {useParams, useHistory} from "react-router-dom"
 import {useAccount} from "../../hooks/use-account"
-import {Base} from "../../comps/base"
 import * as fcl from "@onflow/fcl"
 import * as t from "@onflow/types"
-import {Wat} from "../../comps/wat"
-import {CodeEditor} from "../../comps/editor"
-import {Bar, Icon, Pad, Button, Input, Label} from "../../comps/bar"
-import {SideBar} from "./sidebar"
+import CodeEditor from "../../comps/editor"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useTx, IDLE} from "../../hooks/use-tx.hook"
-import {Roll} from "../../styles/text.comp"
+import {Roll} from "../../comps/text"
 import {withPrefix} from "../../util/address.util"
+import {AccountSideBar} from "./index"
+import Stack from '@mui/material/Stack';
+import Page from "../../comps/page"
+import Fab from '@mui/material/Fab';
+import SaveIcon from '@mui/icons-material/Save';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import Box from '@mui/material/Box';
 
-const Header = () => {
-  const {env, address} = useParams()
 
-  return (
-    <Wat
-      icon="plus"
-      parts={[
-        {
-          to: `/${env}`,
-          label: env,
-        },
-        {label: "account"},
-        {
-          to: `/${env}/account/${withPrefix(address)}`,
-          label: withPrefix(address),
-        },
-        {label: "contract"},
-        {
-          to: `/${env}/account/${withPrefix(address)}/contract/new`,
-          label: "new",
-        },
-      ]}
-    />
-  )
-}
+const fabStyle = {
+  position: 'absolute',
+  bottom: 30,
+  right: 30,
+};
+
 
 function Footer({code, name}) {
   const history = useHistory()
@@ -61,7 +47,7 @@ function Footer({code, name}) {
     {
       async onSuccess() {
         await acct.refetch()
-        history.push(`/${params.env}/account/${withPrefix(params.address)}/contract/${name}`)
+        history.push(`/${withPrefix(params.address)}/${name}`)
       },
     }
   )
@@ -75,50 +61,55 @@ function Footer({code, name}) {
   }
 
   if (status !== IDLE)
-    return (
-      <Bar>
-        <Label>
-          <Roll label={txStatus} />
-        </Label>
-        {details.txId && <Label>{details.txId}</Label>}
-      </Bar>
-    )
-
   return (
-    <Bar reverse>
-      <Button disabled={name.length < 3} onClick={saveContract}>
-        <Icon icon="save" />
-        <Pad>Deploy Contract</Pad>
-      </Button>
-      <Input defaultValue={name} disabled placeholder="Contract Name" />
-    </Bar>
+    <Snackbar open={true}>
+      <Alert icon={false} severity="success" sx={{ width: '100%' }}>
+      <Roll label={txStatus} /> {details.txId}
+      </Alert>
+    </Snackbar>
+  )
+
+  if (name){
+    return (
+       <Fab sx={fabStyle} color="secondary" onClick={saveContract}>
+        <SaveIcon />
+      </Fab>
+      ) 
+  }
+return (
+  <Box></Box>
   )
 }
 
-export function Page() {
+export function Content() {
   const params = useParams()
   const user = useCurrentUser()
   const [code, setCode] = useState(Array.from({length: 12}, _ => "\n").join(""))
   const [name, setName] = useState("")
+  
   useEffect(() => {
     setName(code.match(/(?<access>pub|access\(all\)) contract (?<name>\w+)/)?.groups?.name ?? "")
-  }, [code])
+  }, [code, name])
 
   const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(params.address)
 
   if (!IS_CURRENT_USER) return <div>Sadly No</div>
 
   return (
-    <Base sidebar={<SideBar />} header={<Header />} footer={<Footer code={code} name={name} />}>
-      <CodeEditor key="NEW_CONTRACT" name="NEW_CONTRACT" code={code} onChange={setCode} />
-    </Base>
+    <Stack>
+      <CodeEditor key="NEW_CONTRACT" name="NEW_CONTRACT" code={code} onChange={setCode} lang="cadence"/>
+      <Footer code={code} name={name} />
+    </Stack>     
   )
 }
 
 export default function WrappedPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Page />
+      <Page sideContent={<AccountSideBar/>}>
+        <Content/>
+      </Page>
     </Suspense>
   )
 }
+

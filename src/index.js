@@ -3,20 +3,50 @@ import ReactDOM from "react-dom"
 import * as fcl from "@onflow/fcl"
 import {RecoilRoot} from "recoil"
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
-import {MainnetConfig} from "./config/mainnet-config.comp"
-import {TestnetConfig} from "./config/testnet-config.comp"
-import {CanarynetConfig} from "./config/canarynet-config.comp"
 import {GlobalStyles} from "./styles/global"
+import CssBaseline from '@mui/material/CssBaseline';
 
 import Account from "./pages/account"
 import AccountContract from "./pages/account/contract"
+import AccountStorage from "./pages/account/storage"
 import AccountContractNew from "./pages/account/contract-new"
 import AccountKeys from "./pages/account/keys"
-import {TxStatus} from "./pages/tx-status.comp"
-import {Event} from "./pages/event.comp"
-import {Status} from "./pages/status.comp"
+import {TxStatus} from "./pages/tx-status"
 
-import {Default} from "./comps/default"
+import Page from "./comps/page"
+import Box from"@mui/material/Box"
+
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { getNetworkConfig } from "./hooks/use-network"
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+
+const darkTheme = createTheme({
+  components: {
+    MuiTabPanel: {
+      styleOverrides: {
+        root: {
+          padding: '0px',
+        }
+      }
+    }
+  },
+  palette: {
+    mode: 'dark',
+  },
+  typography: {
+    fontFamily: "MonoLisa, JetBrains Mono, Fira Code, monospace",
+    button: {
+      textTransform: 'none'
+    },     
+    }
+});
+
+
 
 window.fcl = fcl
 window.t = fcl.t
@@ -24,57 +54,51 @@ window.query = fcl.query
 window.mutate = fcl.mutate
 window.config = fcl.config
 window.currentUser = fcl.currentUser
-
 fcl.currentUser().subscribe(user => console.log("Current User", user))
 window.addEventListener("FLOW::TX", d => console.log(d.type, d.detail.delta + "ms", d.detail.txId))
-
 window.xform = (value, from, to) => {
   return Buffer.from(value, from).toString(to)
 }
 
-const NoMatch = () => <Default/>
+export function NoMatch() {
+  fcl.config(getNetworkConfig("mainnet"))
+  return(
+   <Box margin={2} sx={{ width: '100%', typography: 'body1' }}>
+     <Page />
+   </Box>
+   )
+ }
+
+ 
 
 // prettier-ignore
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
+    <ThemeProvider theme={darkTheme}>
+    <CssBaseline />
       <GlobalStyles />
       <Router>
-        <Route path="/mainnet/" component={MainnetConfig} />
-        <Route path="/testnet/" component={TestnetConfig} />
-        <Route path="/canarynet/" component={CanarynetConfig} />
         <Switch>
-          <Route exact path="/:env/account/Fx:address" component={Account} />
-          <Route exact path="/:env/account/Fx:address/keys" component={AccountKeys}/>
-          <Route exact path="/:env/account/Fx:address/contract/new" component={AccountContractNew} />
-          <Route exact path="/:env/account/Fx:address/contract/:name" component={AccountContract} />
-
-          <Route exact path="/:env/account/:address" component={Account} />
-          <Route exact path="/:env/account/:address/keys" component={AccountKeys}/>
-          <Route exact path="/:env/account/:address/contract/new" component={AccountContractNew} />
-          <Route exact path="/:env/account/:address/contract/:name" component={AccountContract} />
-
-          <Route exact path="/mainnet/tx/:txId" component={TxStatus} />
-          <Route exact path="/testnet/tx/:txId" component={TxStatus} />
-          <Route exact path="/carnarynet/tx/:txId" component={TxStatus} />
-
-          <Route exact path="/mainnet/event/:eventKey" component={Event} />
-          <Route exact path="/testnet/event/:eventKey" component={Event} />
-          <Route exact path="/canarynet/event/:eventKey" component={Event} />
-
-          <Route exact path="/mainnet/status" component={Status} />
-          <Route exact path="/testnet/status" component={Status} />
-          <Route exact path="/canarynet/status" component={Status} />
-
+          <Route exact path="/:txId([0-9a-fA-F]{64})" component={TxStatus} />
+          <Route exact path="/:address([0-9a-fA-F]{8,16})" component={Account} />
+          <Route exact path="/:address([0-9a-fA-F]{8,16})/keys" component={AccountKeys}/>
+          <Route exact path="/:address([0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path" component={AccountStorage}/>
+          <Route exact path="/:address([0-9a-fA-F]{8,16})/contract/new" component={AccountContractNew} />
+          <Route exact path="/:address([0-9a-fA-F]{8,16})/:name" component={AccountContract} />
+        
+          <Route exact path="/:address(0x[0-9a-fA-F]{8,16})" component={Account} />
+          <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/keys" component={AccountKeys}/>
+          <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path" component={AccountStorage}/>
+          <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/contract/new" component={AccountContractNew} />
+          <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/:name" component={AccountContract} />
+         
           <Route component={NoMatch} />
         </Switch>
       </Router>
+      </ThemeProvider>
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById("root")
 )
 
-// <Route exact path="/mainnet/account/Fx:address" component={Account} />
-// <Route exact path="/testnet/account/Fx:address" component={Account} />
-// <Route exact path="/mainnet/account/0x:address" component={Account} />
-// <Route exact path="/testnet/account/0x:address" component={Account} />

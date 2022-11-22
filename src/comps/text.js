@@ -32,18 +32,17 @@ export const Muted = styled.span`
 
 export const Good = styled.span`
   color: green;
-  font-weight: bold;
 `
 
 export const Bad = styled.span`
   color: tomato;
-  font-weight: bold;
 `
 
 export const Pre = styled.pre`
   padding: 5px;
   margin-left: 5px;
   position: relative;
+  font-size: 0.8em;
   &::after {
     display: block;
     content: "";
@@ -70,13 +69,11 @@ export const Li = styled.li`
 
 export const ListItem = ({label, value, children}) => {
   return (
-    <Li>
       <div style={{display: "flex"}}>
         {label != null && <Muted style={{marginRight: "8px"}}>{label}:</Muted>}
         {value != null && <strong>{value}</strong>}
-      </div>
       {children}
-    </Li>
+      </div>
   )
 }
 
@@ -92,19 +89,38 @@ const Det = styled.div`
     padding-left: 13px;
   }
 `
-export const Detail = ({label, value}) => {
-  return (
-    <Det>
-      <strong>{value}</strong>
-      <small>{label}</small>
-    </Det>
-  )
-}
 
 const Ascii = styled.pre`
   margin: 0;
-  font-weight: bold;
 `
+
+
+export const Button = styled.button`
+  cursor: pointer;
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  border-radius: 3px;
+  font-size: 13px;
+  line-height: 34px;
+  padding: 0 21px;
+
+  ${p =>
+    p.disabled
+      ? css`
+          background: var(--mute);
+          color: var(--fg);
+          cursor: default;
+        `
+      : css`
+          &:hover,
+          &:focus {
+            background: var(--wow);
+          }
+        `}
+`
+
+export const A = styled.a``
 
 export const Dance = ({a, b}) => {
   const [state, setState] = useState(a)
@@ -150,29 +166,11 @@ export const Roll = ({seq = defaultRoll, label}) => {
   )
 }
 
-export const Button = styled.button`
-  cursor: pointer;
-  background: var(--fg);
-  color: var(--bg);
-  border: none;
-  border-radius: 3px;
-  font-size: 13px;
-  line-height: 34px;
-  padding: 0 21px;
-
-  ${p =>
-    p.disabled
-      ? css`
-          background: var(--mute);
-          color: var(--fg);
-          cursor: default;
-        `
-      : css`
-          &:hover,
-          &:focus {
-            background: var(--wow);
-          }
-        `}
-`
-
-export const A = styled.a``
+export const Detail = ({label, value}) => {
+  return (
+    <Det>
+      <strong>{value}</strong>
+      <small>{label}</small>
+    </Det>
+  )
+}

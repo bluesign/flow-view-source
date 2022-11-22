@@ -1,33 +1,10 @@
 import {useParams} from "react-router-dom"
-import {Base} from "../../comps/base"
-import {Bad} from "../../styles/text.comp"
-import {Wat} from "../../comps/wat"
-import {SideBar} from "./sidebar"
-import {Group, Item} from "../../comps/sidebar"
-import {useAccountKeys} from "../../hooks/use-account-keys"
-import {withPrefix} from "../../util/address.util"
-
-const Header = () => {
-  const {env, address} = useParams()
-
-  return (
-    <Wat
-      icon="piano"
-      parts={[
-        {
-          to: `/${env}`,
-          label: env,
-        },
-        {label: "account"},
-        {
-          to: `/${env}/account/${withPrefix(address)}`,
-          label: withPrefix(address),
-        },
-        {label: "keys", to: `/${env}/account/${withPrefix(address)}/keys`},
-      ]}
-    />
-  )
-}
+import {Bad} from "../../comps/text"
+import {useAccount} from "../../hooks/use-account"
+import {Group, Item} from "../../comps/base"
+import Page from "../../comps/page"
+import {Suspense} from "react"
+import {AccountSideBar} from "./index"
 
 const fmtCurve = i =>
   ({
@@ -41,13 +18,14 @@ const fmtHash = i =>
     3: "SHA3_256",
   }[i] || "--")
 
-export function Page() {
+export function Keys() {
   const {address} = useParams()
-  const keys = useAccountKeys(address)
+  const account = useAccount(address)
+
+  const keys = account?.keys ? account?.keys: []
 
   return (
-    <Base sidebar={<SideBar />} header={<Header />}>
-      <div style={{padding: "13px"}}>
+      <div style={{padding: "5px"}}>
         {(keys || []).map(key => (
           <Group title={key.publicKey} icon="key" key={key.index}>
             {key.revoked && (
@@ -63,10 +41,16 @@ export function Page() {
           </Group>
         ))}
       </div>
-    </Base>
   )
 }
 
-export default function WrappedPage() {
-  return <Page />
+
+export default function Content() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+       <Page sideContent={<AccountSideBar/>}>
+       <Keys/>
+       </Page>
+    </Suspense>
+  )
 }
