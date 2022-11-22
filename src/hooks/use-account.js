@@ -44,6 +44,10 @@ export function useAccount(address) {
     .query({
       args: (arg, t) => [arg(address, t.Address)],
       cadence: `
+      import NonFungibleToken from 0xNonFungibleToken
+      import FungibleToken from 0xFungibleToken
+      import MetadataViews from 0xMetadataViews
+
       pub fun main(addr: Address): {String: AnyStruct} {
         let acct = getAccount(addr)
         let ret: {String: AnyStruct} = {}
@@ -54,9 +58,25 @@ export function useAccount(address) {
           var s : [Path] = []
           var pu : [Path] = []
           var pr : [Path] = []
+          var nft : [{String:AnyStruct}] = []
+          var ft : [{String:AnyStruct}] = []
 
           getAuthAccount(addr).forEachStored(fun (path: StoragePath, type: Type): Bool {
-            s.append(path)
+            for banned in ["MusicBlockCollection", "FantastecNFTCollection"]{
+            if path==StoragePath(identifier: banned){
+                return true
+            }}
+            if type.isSubtype(of: Type<@NonFungibleToken.Collection>()){
+              var collection = getAuthAccount(addr).borrow<&NonFungibleToken.Collection>(from:path)!
+              nft.append({"path":path, "count":collection.getIDs().length})
+            }
+            else if type.isSubtype(of: Type<@FungibleToken.Vault>()){
+              var vault = getAuthAccount(addr).borrow<&FungibleToken.Vault>(from:path)!
+              ft.append({"path":path, "balance":vault.balance})
+            }
+            else{
+              s.append(path)
+            }
             return true
           })
           getAuthAccount(addr).forEachPublic(fun (path: PublicPath, type: Type): Bool {
@@ -70,6 +90,9 @@ export function useAccount(address) {
         ret["paths"] = s
         ret["public"] = pu
         ret["private"] = pr
+        ret["nft"] = nft
+        ret["ft"] = ft
+
         return ret
       }
     `,

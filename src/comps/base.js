@@ -111,7 +111,8 @@ const ItemRoot = styled.div`
 
 
 const BaseIcon = styled.i`
-  font-size: 32px;
+  font-size: 13px;
+  margin-right: 6px;
 `
 
 export const Pad = styled.span`
@@ -218,7 +219,6 @@ export const Bar = styled.div`
         `}
 `
 
-export const Icon = ({icon}) => <BaseIcon className={`fas fa-fw fa-${icon}`} />
 
 export const Label = styled.div`
   text-decoration: none;
@@ -241,6 +241,7 @@ export const Label = styled.div`
         `}
 `
 
+export const Icon = ({icon}) => <BaseIcon className={`fas fa-fw fa-${icon}`} />
 
 export function Group({title = null, icon = null, as = null, children, ...rest}) {
   return (
@@ -248,7 +249,7 @@ export function Group({title = null, icon = null, as = null, children, ...rest})
       {title && (
         <GroupTitle as={as} {...rest}>
           <span>
-            {icon && <Icon className={`fas fa-fw fa-${icon}`} />}
+            {icon && <BaseIcon className={`fas fa-fw fa-${icon}`} />}
             {title}
           </span>
         </GroupTitle>
@@ -259,10 +260,12 @@ export function Group({title = null, icon = null, as = null, children, ...rest})
 }
 
 export function Item({icon = null, as = null, children, ...rest}) {
+  console.log(icon)
   return (
     <ItemRoot as={as} {...rest}>
       <span>
-        {icon && <Icon className={`fas fa-fw fa-${icon}`} />}
+        {icon && <BaseIcon className={`fas fa-fw fa-${icon}`}  />}
+        
         {children}
       </span>
     </ItemRoot>

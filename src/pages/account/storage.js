@@ -70,7 +70,7 @@ export function Content() {
       async function browseStorage(patk){
         
           fcl.send([fcl.script(`
-                 import MetadataViews from 0x1d7e57aa55817448
+                 import MetadataViews from 0xMetadataViews
 
                   pub fun main(address: Address, path: String) : AnyStruct{
                     var response:  {String:AnyStruct} = {}
