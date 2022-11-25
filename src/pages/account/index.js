@@ -45,8 +45,7 @@ export function AccountSideBar() {
   const contracts = account?.contractNames
 
   const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(address)
-  if (!accountStorage) return null
-
+ 
   accountStorage?.nft.sort((a, b) => {
     if(parseInt(a.count) < parseInt(b.count)) return 1;
     if(parseInt(a.count) > parseInt(b.count)) return -1;
