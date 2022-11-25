@@ -12,7 +12,7 @@ import {useAccount} from "../../hooks/use-account"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
-import {Group, Item, HR, AccountAddress, keysUrl, contractUrl, storageUrl} from "../../comps/base"
+import {Group, Item, HR, AccountAddress, accountUrl, contractUrl, storageUrl} from "../../comps/base"
 import {Keys} from "./keys"
 import { Content as Contracts } from "./contract";
 import Page from "../../comps/page"
@@ -146,7 +146,7 @@ export function AccountSideBar() {
 export default function WrappedContent() {
   const {address, name, domain, path} = useParams()
    
-  content = <Keys/>
+  var content = <Keys/>
   if (name!=null){
     content = <Contracts/>
   }
@@ -158,7 +158,7 @@ export default function WrappedContent() {
     <Suspense fallback={<div>Loading...</div>}>
 
     <Page sideContent={<AccountSideBar/>}>
-      <Keys/>
+      <content />
     </Page>
     
     </Suspense>
