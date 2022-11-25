@@ -24,15 +24,15 @@ function storageCapacity(storage) {
 
 export function AccountSideBar() {
   const [open, setState] = useState(true);
+  const {address} = useParams()
 
-  const toggleDrawer = (open) => (event) => {
+  const toggleDrawer = () => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-    setState(open);
+    setState(!open);
   };
 
-  const {address} = useParams()
   const network = useNetworkForAddress(address)
   const user = useCurrentUser()
   const account = useAccount(address)
@@ -73,13 +73,13 @@ export function AccountSideBar() {
       <IconButton 
           edge="start"
           color="inherit"
-          aria-label="open drawer"
-          onClick={toggleDrawer(true)}
+          onClick={toggleDrawer()}
           sx={{ mr: 2, display: { xs: 'flex', sm: 'flex',}, }}>   
           <MenuIcon />
         </IconButton>
         </Stack>
-        <Group title={`Account [${network}]`} >
+       
+        <Group title={`Account - [${network}]`} >
           <Item as={Link}  to={keysUrl(address)} icon="key"> {accountKeys?.length} Keys</Item>
           <Item icon="box-heart">{storageCapacity(accountStorage)} Capacity</Item>
           <Item icon="code">{`${contracts?.length} Contract(s)`}</Item>
