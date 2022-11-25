@@ -65,7 +65,18 @@ export function AccountSideBar() {
     if(a.identifier < b.identifier) return -1;
     return 0;
   })
-  
+
+  if (!open){
+    return  (<Stack spacing={2}>
+<IconButton 
+            edge="start"
+            color="inherit"
+            onClick={toggleDrawer()}
+            sx={{minHeight:32, mr: 0}}>   
+             <MenuIcon />
+          </IconButton>
+    </Stack>)
+  }
   return (
     <Stack spacing={2}>
 
@@ -144,7 +155,7 @@ export function AccountSideBar() {
 }
 
 export default function WrappedContent() {
-  const {address, name, domain, path} = useParams()
+  const {name, domain} = useParams()
    
   var content = <Keys/>
   if (name!=null){

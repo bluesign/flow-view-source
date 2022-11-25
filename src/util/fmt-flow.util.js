@@ -15,12 +15,10 @@ export function fmtTransactionStatus(status) {
 
 
 export function cadenceValueToDict(payload){
-  console.log(payload)
   if (!payload) return null 
   if (payload["type"]==="Array")
     return cadenceValueToDict(payload["value"])
 
-  //console.log(payload)
   if (payload["type"]==="Dictionary"){
     
       var resDict = {}

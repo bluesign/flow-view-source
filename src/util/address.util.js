@@ -65,7 +65,6 @@ const NETWORKS = new Set(["mainnet", "testnet"])
 export function getNetworkFromAddress(address){
   var result = null;
   NETWORKS.forEach(element => {
-    console.log(element, address);
     if (isValidAddressForNetwork({address:withPrefix(address), network: element})){
       result = element;
     }
@@ -77,7 +76,6 @@ export function isValidAddressForNetwork({
   address,
   network
 }) {
-  console.log(address, network)
   if (!address) throw new Error("isValidAddressForNetwork({ address }) -- address is required")
   if (typeof address !== "string") throw new Error("isValidAddressForNetwork({ address }) -- address must be a string")
   if (!network) throw new Error("isValidAddressForNetwork({ network }) -- network is required")
@@ -86,7 +84,6 @@ export function isValidAddressForNetwork({
   if (!(NETWORKS.has(network))) throw new Error(`isValidAddressForNetwork({ network }) -- network=${network} is not supported`)
 
   let networkCodeword = NETWORK_CODEWORDS[network]
-  console.log(networkCodeword)
   if (typeof networkCodeword === "undefined") throw new Error(`isValidAddressForNetwork -- Could not find network codeword for network=${network}`)
 
 	let codeWord = BigInt(address)
@@ -104,7 +101,6 @@ export function isValidAddressForNetwork({
 		}
 		codeWord >>= BigInt(1)
 	}
-  console.log(parity)
 
 	return (parity === BigInt(0)) && (codeWord === BigInt(0))
 }

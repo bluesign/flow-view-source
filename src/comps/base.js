@@ -260,7 +260,6 @@ export function Group({title = null, icon = null, as = null, children, ...rest})
 }
 
 export function Item({icon = null, as = null, children, ...rest}) {
-  console.log(icon)
   return (
     <ItemRoot as={as} {...rest}>
       <span>
@@ -277,7 +276,7 @@ export function AccountAddress({address}){
 return <Chip  
   size="small"
   variant="outlined"  
-  sx={{fontWeight:700}} 
+  sx={{fontWeight:700, minHeight:32, display:"flex-inline"}} 
   label={withPrefix(address)} 
   component="a"
   href={accountUrl(address)}
