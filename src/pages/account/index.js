@@ -37,30 +37,29 @@ export function AccountSideBar() {
   const user = useCurrentUser()
   const account = useAccount(address)
 
-  if (!account) return null
 
   //const fusdBalance = useFusdBalance(address)
 
-  const accountKeys = account.keys
-  const accountStorage = account.storage
-  const contracts = account.contractNames
+  const accountKeys = account?.keys
+  const accountStorage = account?.storage
+  const contracts = account?.contractNames
 
   const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(address)
   if (!accountStorage) return null
 
-  accountStorage.nft.sort((a, b) => {
+  accountStorage?.nft.sort((a, b) => {
     if(parseInt(a.count) < parseInt(b.count)) return 1;
     if(parseInt(a.count) > parseInt(b.count)) return -1;
     return 0;
   })
 
-  accountStorage.ft.sort((a, b) => {
+  accountStorage?.ft.sort((a, b) => {
     if(parseFloat(a.count) < parseFloat(b.count)) return 1;
     if(parseFloat(a.count) > parseFloat(b.count)) return -1;
     return 0;
   })
 
-  accountStorage.paths.sort((a, b) => {
+  accountStorage?.paths.sort((a, b) => {
     if(a.identifier > b.identifier) return 1;
     if(a.identifier < b.identifier) return -1;
     return 0;
@@ -83,7 +82,7 @@ export function AccountSideBar() {
         <Group title={`Account [${network}]`} >
           <Item as={Link}  to={keysUrl(address)} icon="key"> {accountKeys?.length} Keys</Item>
           <Item icon="box-heart">{storageCapacity(accountStorage)} Capacity</Item>
-          <Item icon="code">{`${contracts.length} Contract(s)`}</Item>
+          <Item icon="code">{`${contracts?.length} Contract(s)`}</Item>
           {contracts.map(name => (
           <Item icon="" key={name}  as={Link} to={contractUrl(address, name)}>
             - {name} 
@@ -99,7 +98,7 @@ export function AccountSideBar() {
         </Group>
 
         <Group title={`FT Vault(s)`} >
-        {accountStorage && accountStorage.ft.sort(function compareFn(a, b) { return a.balance < b.balance}).map(vault => (
+        {accountStorage && accountStorage?.ft.sort(function compareFn(a, b) { return a.balance < b.balance}).map(vault => (
           <Box><Item icon="coins" key={vault.path.domain+"/"+vault.path.identifier} as={Link} to={storageUrl(address, vault.path.domain, vault.path.identifier)}>
             {vault.path.identifier} 
           </Item>
@@ -110,7 +109,7 @@ export function AccountSideBar() {
       </Group
       >
       <Group title={`NFT Collection(s)`} >
-        {accountStorage && accountStorage.nft.map(collection => (
+        {accountStorage && accountStorage?.nft.map(collection => (
           <Item icon="folder" key={collection.path.domain+"/"+collection.path.identifier}  as={Link} to={storageUrl(address, collection.path.domain, collection.path.identifier)}>
             {collection.path.identifier} ({collection.count})
           </Item>
@@ -120,7 +119,7 @@ export function AccountSideBar() {
 
 
       <Group title={`Storage`} >
-        {accountStorage && accountStorage.paths.map(path => (
+        {accountStorage && accountStorage?.paths.map(path => (
           <Item icon="folder" key={path.domain+"/"+path.identifier}  as={Link} to={storageUrl(address, path.domain, path.identifier)}>
             {path.identifier}
           </Item>
