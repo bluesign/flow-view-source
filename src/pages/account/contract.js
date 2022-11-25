@@ -91,13 +91,3 @@ export function Content() {
 }
 
 
-
-export default function WrappedContent() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-       <Page sideContent={<AccountSideBar/>}>
-        <Content/>
-       </Page>
-    </Suspense>
-  )
-}

@@ -14,7 +14,9 @@ import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
 import {Group, Item, HR, AccountAddress, keysUrl, contractUrl, storageUrl} from "../../comps/base"
 import {Keys} from "./keys"
+import { Content as Contracts } from "./contract";
 import Page from "../../comps/page"
+import {Content as Storage } from "./storage"
 
 function storageCapacity(storage) {
   let used = storage?.used ?? 1
@@ -79,7 +81,7 @@ export function AccountSideBar() {
         </Stack>
        
         <Group title={`Account - [${network}]`} >
-          <Item as={Link}  to={keysUrl(address)} icon="key"> {accountKeys?.length} Keys</Item>
+          <Item as={Link}  to={accountUrl(address)} icon="key"> {accountKeys?.length} Keys</Item>
           <Item icon="box-heart">{storageCapacity(accountStorage)} Capacity</Item>
           <Item icon="code">{`${contracts?.length} Contract(s)`}</Item>
           {contracts.map(name => (
@@ -142,6 +144,16 @@ export function AccountSideBar() {
 }
 
 export default function WrappedContent() {
+  const {address, name, domain, path} = useParams()
+   
+  content = <Keys/>
+  if (name!=null){
+    content = <Contracts/>
+  }
+  if (domain!=null){
+    content = <Storage/>
+  }
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
 
