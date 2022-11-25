@@ -12,7 +12,7 @@ import {useAccount} from "../../hooks/use-account"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
-import {Group, Item, HR, AccountAddress, accountUrl, contractUrl, storageUrl} from "../../comps/base"
+import {Group, Item, HR, AccountAddress, contractUrl, storageUrl, keysUrl} from "../../comps/base"
 import {Keys} from "./keys"
 import { Content as Contracts } from "./contract";
 import Page from "../../comps/page"
@@ -78,21 +78,22 @@ export function AccountSideBar() {
     </Stack>)
   }
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{display: "flex"}}>
 
-      <Stack direction="column">
-      <AccountAddress address={address} sx={{ mr: 1, display: { xs: 'flex', sm: 'flex',}, }}/>
+      <Stack direction="row"  sx={{display: "flex-inline"}}>
       <IconButton 
           edge="start"
           color="inherit"
           onClick={toggleDrawer()}
-          sx={{ mr: 2, display: { xs: 'flex', sm: 'flex',}, }}>   
-          <MenuIcon />
-        </IconButton>
-        </Stack>
+          sx={{ mr: 2, display: "flex-inline" }}>   
+          <MenuIcon  sx={{display: "flex-inline"}}/>
+      </IconButton>
+      <AccountAddress address={address} sx={{ display:"flex-inline" }}/>
+
+      </Stack> 
        
         <Group title={`Account - [${network}]`} >
-          <Item as={Link}  to={accountUrl(address)} icon="key"> {accountKeys?.length} Keys</Item>
+          <Item as={Link}  to={keysUrl(address)} icon="key"> {accountKeys?.length} Keys</Item>
           <Item icon="box-heart">{storageCapacity(accountStorage)} Capacity</Item>
           <Item icon="code">{`${contracts?.length} Contract(s)`}</Item>
           {contracts.map(name => (
@@ -156,20 +157,20 @@ export function AccountSideBar() {
 
 export default function WrappedContent() {
   const {name, domain} = useParams()
-   
+  
+  
   var content = <Keys/>
   if (name!=null){
     content = <Contracts/>
   }
-  if (domain!=null){
+  else if (domain!=null){
     content = <Storage/>
   }
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
 
     <Page sideContent={<AccountSideBar/>}>
-      <content />
+      {content}
     </Page>
     
     </Suspense>

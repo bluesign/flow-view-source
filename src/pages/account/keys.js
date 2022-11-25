@@ -2,9 +2,6 @@ import {useParams} from "react-router-dom"
 import {Bad} from "../../comps/text"
 import {useAccount} from "../../hooks/use-account"
 import {Group, Item} from "../../comps/base"
-import Page from "../../comps/page"
-import {Suspense} from "react"
-import {AccountSideBar} from "./index"
 
 const fmtCurve = i =>
   ({
@@ -45,12 +42,3 @@ export function Keys() {
 }
 
 
-export default function Content() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-       <Page sideContent={<AccountSideBar/>}>
-       <Keys/>
-       </Page>
-    </Suspense>
-  )
-}

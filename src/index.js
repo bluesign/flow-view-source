@@ -7,10 +7,7 @@ import {GlobalStyles} from "./styles/global"
 import CssBaseline from '@mui/material/CssBaseline';
 
 import Account from "./pages/account"
-import AccountContract from "./pages/account/contract"
-import AccountStorage from "./pages/account/storage"
 import AccountContractNew from "./pages/account/contract-new"
-import AccountKeys from "./pages/account/keys"
 import {TxStatus} from "./pages/tx-status"
 
 import Page from "./comps/page"

@@ -1,6 +1,6 @@
 import * as fcl from "@onflow/fcl"
 import * as t from "@onflow/types"
-import {Suspense,useMemo, useState, useEffect} from "react"
+import {useMemo, useState, useEffect} from "react"
 import {useParams} from "react-router-dom"
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -14,8 +14,6 @@ import CodeEditor from "../../comps/editor"
 import {useTx, IDLE} from "../../hooks/use-tx.hook"
 import {Roll} from "../../comps/text"
 import {withPrefix} from "../../util/address.util"
-import Page from "../../comps/page"
-import {AccountSideBar} from "./index"
 
 
 const fabStyle = {
