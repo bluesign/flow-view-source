@@ -6,6 +6,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import styled from "styled-components"
 import CurrentUser from "./currentUser"
+import { useHistory } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useState } from "react";
+import {NavLink as Link, useParams} from "react-router-dom"
 
 
 const Root = styled.div`
@@ -55,18 +60,25 @@ const Search = mstyled('div')(({ theme }) => ({
     },
   }));
   
-  export function AppBarWithSearch() {
+  export function AppBarWithSearch({toggleDrawer}) {
+    let history = useHistory();
 
     function goSearch(query){
       if (query.code==="Enter"){
-          window.location = "/" +  query.target.value
+        history.push("/" +  query.target.value)
       } 
     }
 
     return (
       <AppBar >
         <Toolbar>
-      
+<IconButton 
+            edge="start"
+            color="inherit"
+            onClick={toggleDrawer()}
+            sx={{minHeight:32, mr: 0}}>   
+    <MenuIcon />
+          </IconButton>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -90,14 +102,22 @@ const Search = mstyled('div')(({ theme }) => ({
 
 
 export default function Component({sideContent, children, ...rest})  { 
-   
+  const [open, setState] = useState(true);
+  const {address} = useParams()
+
+  const toggleDrawer = () => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setState(!open);
+  };
   return (
     <Root>
         <Main>
         <Toolbar/>
-        <AppBarWithSearch />
+        <AppBarWithSearch toggleDrawer={toggleDrawer}/>
         <Box p={1} sx={{ display: 'flex' }}>
-          {sideContent}
+          {open && sideContent}
           <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
             {children}
           </Box>

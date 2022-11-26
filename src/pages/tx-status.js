@@ -12,14 +12,14 @@ import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import Chip from '@mui/material/Chip';
 import dedent from "dedent";
 import { extractTransactionArguments } from "@onflow/flow-cadut"
+import {Suspense} from "react"
 
 import { getNetworkConfig } from "../hooks/use-network"
 import CodeEditor from "../comps/editor"
-import {withPrefix} from "../util/address.util"
 import Page from '../comps/page'
-import {Group} from "../comps/base"
-import {H3, Muted, Pre} from "../comps/text"
-import {accountUrl} from "../comps/base"
+import {Group, AccountAddress, Item} from "../comps/base"
+
+import {H5, Muted, Pre} from "../comps/text"
 import {cadenceValueToDict, fmtTransactionStatus} from "../util/fmt-flow.util"
 
 
@@ -75,35 +75,27 @@ export function TxStatus() {
   } 
 
 
-    if (txStatus == null || txInfo == null || txStatus.status==='') {
-    return (
- 
-<Box margin={2} sx={{ width: '100%', typography: 'body1' }}>
-<Page />
-      <div>
-        <H3>
-          <span>Fetching info for: </span>
-          <Muted>{txId}</Muted>
-        </H3>
-      </div>
-      </Box>
-
-    )
+  if (txStatus == null || txInfo == null || txStatus.status==='') {
+    return (      <Page >
+      <H5><span>Fetching info for: </span><Muted>{txId}</Muted></H5></Page>)
   }
 
+  
+
+
+
 return (
-<Box>
-<Page />
+  <Suspense fallback={<H5><span>Fetching info for: </span><Muted>{txId}</Muted></H5>} >
+      <Page >
+
 
 <Box margin={2} sx={{ width: '100%', typography: 'body1' }}>
 
-<Group title={`Transaction [${network}]`} exact >
-<Chip 
-  sx={{fontWeight:700}} 
-  label={txId}
-  size="small"
-  variant="outlined"  
-  />
+<Group title={`Transaction - [${network}]`} exact >
+
+<Item icon="" sx={{fontWeight:700}} size="small"> {txId} </Item>
+
+
    <Chip 
   color={txStatus.status<4?"info":"success"}
   sx={{fontWeight:700, display: 'flex-inline' }}
@@ -130,54 +122,25 @@ return (
 >
 
 <Group title="Proposer" exact>
-<Chip  
-  size="small"
-  variant="outlined"  
-  sx={{fontWeight:700}} 
-  label={withPrefix(txInfo?.proposalKey?.address)} 
-  component="a"
-  href={accountUrl(txInfo?.proposalKey?.address)}
-  clickable
-  key="proposer"
-  />
+<AccountAddress address={txInfo?.proposalKey?.address} key="proposer" sx={{ display:"flex-inline" }}/>
 </Group>
 
 <Group title="Payer" exact >
-<Chip  
-  size="small"
-  variant="outlined"  
-  sx={{fontWeight:700}} 
-  label={withPrefix(txInfo?.payer)} 
-  component="a"
-  href={accountUrl(txInfo?.payer)}
-  clickable
-  key="payer"
-
-/>
+<AccountAddress address={txInfo?.payer} key="payer" sx={{ display:"flex-inline" }}/>
 </Group>
 
 
 <Group title="Authorizers" exact >
 {txInfo?.authorizers?.map((auth, i) => (
-      <Chip  
-        size="small"
-        variant="outlined"  
-        sx={{fontWeight:700, display: 'flex',  flexWrap: 'wrap' } }
-        label={withPrefix(auth)} 
-        component="a"
-        href={accountUrl(auth)}
-        clickable
-        key={"auth"+i}
-        />
+  <AccountAddress address={auth} key={"auth"+i} sx={{ display:"flex-inline" }}/>
  ))}
 </Group>
 </Box>
 
 
-
       <TabContext padding={0} value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
+          <TabList onChange={handleChange}>
             {txStatus.errorMessage &&  <Tab iconPosition="start" icon={<ErrorOutlineOutlinedIcon/>} label="Error" value="1" />}
             <Tab iconPosition="start" icon={<CodeIcon/>} label="Script" value="2" />
             <Tab iconPosition="start" label={`Arguments (${txInfo?.args.length})`} value="3" />
@@ -215,15 +178,13 @@ return (
           </TabPanel>
       </TabContext>
     </Box>
-</Box>
 
-   
+</Page>
+      
+      </Suspense>
    
 
   )
+
+
 }
-
-
-
- 
-  

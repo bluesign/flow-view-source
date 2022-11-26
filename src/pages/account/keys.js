@@ -5,9 +5,9 @@ import {Group, Item} from "../../comps/base"
 
 const fmtCurve = i =>
   ({
-    2: "ECDSA_P256",
-    3: "ECDSA_secp256k1",
-  }[i] || "--")
+    1: "ECDSA_P256",
+    2: "ECDSA_secp256k1",
+  }[i] || "--" + i)
 
 const fmtHash = i =>
   ({

@@ -1,6 +1,6 @@
 import styled, {css} from "styled-components"
-import Chip from '@mui/material/Chip';
 import {withPrefix} from "../util/address.util"
+import {NavLink as Link} from "react-router-dom"
 
 export const Scroll = styled.div`
   flex: 1;
@@ -71,14 +71,16 @@ const GroupTitle = styled.div`
 
 const ItemRoot = styled.div`
   font-size: 13px;
-  line-height: 21px;
-  margin-right: 21px;
+  line-height: 16px;
+  margin-right: 0px;
   background: none;
   border: none;
   padding: 0px;
   display: block;
+  white-space: no-wrap;
   font-family: var(--font-family);
   & > span {
+    white-space: nowrap;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -113,6 +115,7 @@ const ItemRoot = styled.div`
 const BaseIcon = styled.i`
   font-size: 13px;
   margin-right: 6px;
+  margin-top:
 `
 
 export const Pad = styled.span`
@@ -273,6 +276,8 @@ export function Item({icon = null, as = null, children, ...rest}) {
 
 
 export function AccountAddress({address}){
+  return <Item icon=""  as={Link} to={accountUrl(address)} > {withPrefix(address)}  </Item>
+/*
 return <Chip  
   size="small"
   variant="outlined"  
@@ -280,8 +285,8 @@ return <Chip
   label={withPrefix(address)} 
   component="a"
   href={accountUrl(address)}
-  clickable
-/>
+  clickable={false}
+/>*/
 }
 
 export const accountUrl = (addr) => `/${withPrefix(addr)}`

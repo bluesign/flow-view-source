@@ -25,6 +25,14 @@ export const H3 = styled.h3`
     margin-right: 13px;
   }
 `
+export const H5 = styled.h5`
+  display: flex;
+  align-items: center;
+
+  & > * {
+    margin-right: 13px;
+  }
+`
 
 export const Muted = styled.span`
   color: var(--mute);

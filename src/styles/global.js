@@ -11,7 +11,8 @@ export const GlobalStyles = createGlobalStyle`
       --good: lime;
       --hi: rgba(66,0,255,0.25);
       --subtle: rgba(255,255,255,0.1);
-    }
+      --font-family:"MonoLisa","JetBrains Mono","Fira Code",monospace;
+    
   }
 
   ::selection {

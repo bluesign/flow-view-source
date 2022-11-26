@@ -29,7 +29,7 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
           language={lang} 
           style={vs2015}
           customStyle={{
-            fontSize:"0.8em", 
+            fontSize:"0.9em", 
             backgroundColor:"transparent"
           }}
       >

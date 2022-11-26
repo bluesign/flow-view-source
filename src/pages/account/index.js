@@ -1,18 +1,18 @@
 import {Suspense} from "react"
-import {NavLink as Link, useParams} from "react-router-dom"
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
+import {NavLink as Link, useParams} from "react-router-dom"
 
 
 import {useAccount} from "../../hooks/use-account"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
-import {Group, Item, HR, AccountAddress, contractUrl, storageUrl, keysUrl} from "../../comps/base"
+import {Group, Item, HR, Scroll, contractUrl, storageUrl, keysUrl, accountUrl} from "../../comps/base"
 import {Keys} from "./keys"
 import { Content as Contracts } from "./contract";
 import Page from "../../comps/page"
@@ -25,15 +25,9 @@ function storageCapacity(storage) {
 }
 
 export function AccountSideBar() {
-  const [open, setState] = useState(true);
   const {address} = useParams()
 
-  const toggleDrawer = () => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-    setState(!open);
-  };
+  
 
   const network = useNetworkForAddress(address)
   const user = useCurrentUser()
@@ -42,7 +36,6 @@ export function AccountSideBar() {
 
   //const fusdBalance = useFusdBalance(address)
 
-  const accountKeys = account?.keys
   const accountStorage = account?.storage
   const contracts = account?.contractNames
 
@@ -66,81 +59,55 @@ export function AccountSideBar() {
     return 0;
   })
 
-  if (!open){
-    return  (<Stack spacing={2}>
-<IconButton 
-            edge="start"
-            color="inherit"
-            onClick={toggleDrawer()}
-            sx={{minHeight:32, mr: 0}}>   
-             <MenuIcon />
-          </IconButton>
-    </Stack>)
-  }
+
   return (
-    <Stack spacing={2} sx={{display: "flex"}}>
-
-      <Stack direction="row"  sx={{display: "flex-inline"}}>
-      <IconButton 
-          edge="start"
-          color="inherit"
-          onClick={toggleDrawer()}
-          sx={{ mr: 2, display: "flex-inline" }}>   
-          <MenuIcon  sx={{display: "flex-inline"}}/>
-      </IconButton>
-      <AccountAddress address={address} sx={{ display:"flex-inline" }}/>
-
-      </Stack> 
-       
-        <Group title={`Account - [${network}]`} >
-          <Item as={Link}  to={keysUrl(address)} icon="key"> {accountKeys?.length} Keys</Item>
-          <Item icon="box-heart">{storageCapacity(accountStorage)} Capacity</Item>
-          <Item icon="code">{`${contracts?.length} Contract(s)`}</Item>
+    <Stack spacing={3} borderRight={1} >
+      
+     
+        <Group title={
+        <Item as={Link}  to={keysUrl(address)} icon="ghost">  {address} - [{network}] </Item>} >
+        </Group>
+        
+        {contracts?.length>0 && 
+        <Group icon="code" title={`${contracts?.length} Contracts`} >
           {contracts.map(name => (
-          <Item icon="" key={name}  as={Link} to={contractUrl(address, name)}>
-            - {name} 
+          <Item icon="scroll-old" key={name}  as={Link} to={contractUrl(address, name)}>
+             {name} 
           </Item>
           ))}
-
           {IS_CURRENT_USER && <HR />}
           {IS_CURRENT_USER && (
             <Item icon="plus" as={Link} to={contractUrl(address, "new")} >
               New Contract
             </Item>
           )}
-        </Group>
+          </Group>}
 
-        <Group title={`FT Vault(s)`} >
+
+          
+        
+
+        <Group icon="warehouse" title={`FT Vaults`} >
         {accountStorage && accountStorage?.ft.sort(function compareFn(a, b) { return a.balance < b.balance}).map(vault => (
           <Box><Item icon="coins" key={vault.path.domain+"/"+vault.path.identifier} as={Link} to={storageUrl(address, vault.path.domain, vault.path.identifier)}>
-            {vault.path.identifier} 
+            {vault.path.identifier} [ {vault.balance} ]
           </Item>
-          <Typography fontSize={12} color="text.secondary">
-           Balance: {vault.balance}
-          </Typography> </Box>
+        </Box>
         ))}
       </Group
       >
-      <Group title={`NFT Collection(s)`} >
+
+      {accountStorage?.nft.length>0 &&
+      <Group icon="box-heart" title={`NFT Collections`} >
         {accountStorage && accountStorage?.nft.map(collection => (
           <Item icon="folder" key={collection.path.domain+"/"+collection.path.identifier}  as={Link} to={storageUrl(address, collection.path.domain, collection.path.identifier)}>
             {collection.path.identifier} ({collection.count})
           </Item>
         
         ))}
-      </Group>
+      </Group>}
 
-
-      <Group title={`Storage`} >
-        {accountStorage && accountStorage?.paths.map(path => (
-          <Item icon="folder" key={path.domain+"/"+path.identifier}  as={Link} to={storageUrl(address, path.domain, path.identifier)}>
-            {path.identifier}
-          </Item>
-        
-        ))}
-      </Group>
-
-      <Group title={`Link(s)`} >
+      <Group icon="link" title={`Links`} >
           <Item icon="link" key="Public"  as={Link} to={storageUrl(address, "public", "list")}>
           Public
           </Item>
@@ -149,8 +116,18 @@ export function AccountSideBar() {
           </Item>
       </Group>
 
-  </Stack>       
+      <Group icon="database" title={`Storage ${storageCapacity(accountStorage)} Capacity`} >
+        {accountStorage && accountStorage?.paths.map(path => (
+          <Item icon="folder" key={path.domain+"/"+path.identifier}  as={Link} to={storageUrl(address, path.domain, path.identifier)}>
+            {path.identifier}
+          </Item>
+        
+        ))}
+      </Group>
 
+ 
+
+  </Stack>       
 
   )
 }
@@ -167,7 +144,7 @@ export default function WrappedContent() {
     content = <Storage/>
   }
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Page>Loading...</Page>}>
 
     <Page sideContent={<AccountSideBar/>}>
       {content}
