@@ -36,15 +36,15 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
             return(
               <>
                 {rows.map(node=>{
-                  console.log({node})
+                  //console.log({node})
                   const {style, key} = node
                   if(node.children.length === 3){
                     if(node.children[0].children[0].value.includes("import")){
                       const address = node.children[1].children[0].value
                       // add regexp here to check that his is address
                       node.children[1].tagName = "a"
-                      node.children[1].properties.href = `https://flow-view-source.com/mainnet/account/${address}`
-                      node.children[1].properties.title = `Check Cadence code on Flow View Source - ${address}`
+                      node.children[1].properties.href = `https://f.dnz.dev/${address}`
+                      node.children[1].properties.title = `Check account - ${address}`
                     }
                   }
                   return createElement({
