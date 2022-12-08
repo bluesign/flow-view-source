@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Editor,  { useMonaco } from "@monaco-editor/react";
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import SyntaxHighlighter, { createElement } from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import configureCadence from "./cadence"
 
@@ -31,6 +31,32 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
           customStyle={{
             fontSize:"0.9em", 
             backgroundColor:"transparent"
+          }}
+          renderer={({rows, stylesheet, useInlineStyles})=>{
+            return(
+              <>
+                {rows.map(node=>{
+                  console.log({node})
+                  const {style, key} = node
+                  if(node.children.length === 3){
+                    if(node.children[0].children[0].value.includes("import")){
+                      const address = node.children[1].children[0].value
+                      // add regexp here to check that his is address
+                      node.children[1].tagName = "a"
+                      node.children[1].properties.href = `https://flow-view-source.com/mainnet/account/${address}`
+                      node.children[1].properties.title = `Check Cadence code on Flow View Source - ${address}`
+                    }
+                  }
+                  return createElement({
+                    node,
+                    stylesheet,
+                    style,
+                    useInlineStyles,
+                    key
+                  })
+                })}
+              </>
+            )
           }}
       >
       {code}
