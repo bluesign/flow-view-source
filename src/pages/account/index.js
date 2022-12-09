@@ -1,10 +1,7 @@
 import {Suspense} from "react"
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useState } from "react";
+
 import {NavLink as Link, useParams} from "react-router-dom"
 
 
@@ -12,7 +9,7 @@ import {useAccount} from "../../hooks/use-account"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
-import {Group, Item, HR, Scroll, contractUrl, storageUrl, keysUrl, accountUrl} from "../../comps/base"
+import {Group, Item, HR, contractUrl, storageUrl, keysUrl} from "../../comps/base"
 import {Keys} from "./keys"
 import { Content as Contracts } from "./contract";
 import Page from "../../comps/page"

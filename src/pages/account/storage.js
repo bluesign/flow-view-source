@@ -3,7 +3,8 @@
 import * as fcl from "@onflow/fcl"
 import * as t from "@onflow/types"
 import {Suspense, useState, useEffect} from "react"
-import {useParams} from "react-router-dom"
+import {NavLink as Link, useParams} from "react-router-dom"
+
 import Card from "@mui/material/Card"
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
@@ -14,7 +15,7 @@ import {AccountSideBar} from "./index"
 import Box from '@mui/material/Box';
 import CodeEditor from "../../comps/editor"
 import { cadenceValueToDict } from "../../util/fmt-flow.util"
-import { Group, Item } from "../../comps/base"
+import { Group, Item, storageUrl} from "../../comps/base"
 
 
 const style = {
@@ -167,7 +168,7 @@ export function Content() {
         <div>
         <Group title={link.path}> 
         <Item icon="text">{link.borrowType}</Item>
-        <Item icon="crosshairs">{link.target}</Item>
+        <Item icon="crosshairs" as={Link} to={storageUrl(address,  link.target.split("/")[0],  link.target.split("/")[1])}>{link.target}</Item>
         
         </Group>
          <br/>
