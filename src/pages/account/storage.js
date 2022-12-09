@@ -14,6 +14,7 @@ import {AccountSideBar} from "./index"
 import Box from '@mui/material/Box';
 import CodeEditor from "../../comps/editor"
 import { cadenceValueToDict } from "../../util/fmt-flow.util"
+import { Group, Item } from "../../comps/base"
 
 
 const style = {
@@ -68,7 +69,7 @@ export function Content() {
   useEffect(() => {
 
       async function browseStorage(patk){
-        
+        setStorage(null)
           fcl.send([fcl.script(`
                  import MetadataViews from 0xMetadataViews
 
@@ -102,6 +103,7 @@ export function Content() {
               })
         }
         async function browseLink(domain, path){
+          setStorage(null)
           fcl.send([fcl.script(`
 
                   pub fun main(address: Address) : [{String:AnyStruct}]{
@@ -132,7 +134,6 @@ export function Content() {
               })
         }
         
-        console.log(domain)
       if (domain==="storage") browseStorage(path)
       if (domain==="public") browseLink("Public", path)
       if (domain==="private") browseLink("Private", path)
@@ -154,13 +155,33 @@ export function Content() {
   return (
   <Box display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
     
-    {hasNFTdisplay && stored.map((displayView) => (
+    {hasNFTdisplay && stored && stored.map((displayView) => (
       <NFTDisplay view={displayView}/>
     )
     )}
 
-    {!hasCustomDisplay  &&   
+    {!hasCustomDisplay && stored && stored.map &&   
+      (domain==="public" || domain==="private") && 
+      <Box direction="row">
+      {stored.map(link=>
+        <div>
+        <Group title={link.path}> 
+        <Item icon="text">{link.borrowType}</Item>
+        <Item icon="crosshairs">{link.target}</Item>
+        
+        </Group>
+         <br/>
+         </div>
+      )}
+      </Box>
+      
+      
+    }
+     
+    {!hasCustomDisplay && stored  && 
+      (domain==="storage" ) &&  
       <CodeEditor key="storage" prefix={domain} type="" index={0} code={stored} lang="json" />
+
     }
     
     </Box>
