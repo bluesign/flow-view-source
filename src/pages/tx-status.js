@@ -22,11 +22,17 @@ import {Group, AccountAddress, Item} from "../comps/base"
 import {H5, Muted, Pre} from "../comps/text"
 import {cadenceValueToDict, fmtTransactionStatus} from "../util/fmt-flow.util"
 
+import dateFormat from "dateformat";
+
+
+var ago = require('s-ago');
 
 
 export function TxStatus() {
   const {txId} = useParams()
   const [txStatus, setTxStatus] = useState(null)
+  const [txBlock, setTxBlock] = useState(null)
+
   const [txInfo, setTxInfo] = useState(null)
 
   const [value, setValue] = React.useState('2')
@@ -56,6 +62,15 @@ export function TxStatus() {
   }, [txId, txInfo])
 
   useEffect(() => {
+    if (txStatus==null) return
+    async function getTimestamp(txStatus){
+      const latestBlockHeader = await fcl
+	    .send([fcl.getBlockHeader(), fcl.atBlockId(txStatus.blockId)])
+	    .then(fcl.decode);
+      setTxBlock(latestBlockHeader)
+    }
+    getTimestamp(txStatus)
+	  
     if (txStatus && txStatus.errorMessage!==""){
       setValue('1')
     }
@@ -88,39 +103,41 @@ return (
   <Suspense fallback={<H5><span>Fetching info for: </span><Muted>{txId}</Muted></H5>} >
       <Page >
 
-
-<Box margin={2} sx={{ width: '100%', typography: 'body1' }}>
-
-<Group title={`Transaction - [${network}]`} exact >
-
-<Item icon="" sx={{fontWeight:700}} size="small"> {txId} </Item>
+<Box spacing={3} margin={1} sx={{ width: '100%', typography: 'body1' }}>
 
 
-   <Chip 
-  color={txStatus.status<4?"info":"success"}
-  sx={{fontWeight:700, display: 'flex-inline' }}
-  label={`${fmtTransactionStatus(txStatus.status)}`} 
-  size="small"
-  variant="outlined"  
-  key="status"
-  />
+<Box direction="row" spacing={2}  sx={{ display: 'flex',  flexWrap: 'wrap' }}
+>
+  
+<Group title="Transaction" exact >
 
+<Item icon="fingerprint"> {txId} </Item>
+<Item icon="link">{network}</Item> 
+
+<Item icon="list-alt">
 <Chip 
   color={txStatus.errorMessage===""?"success":"error"}
-  sx={{fontWeight:700, display: 'flex-inline' }}
+  sx={{fontWeight:700, fontSize: "0.9em", display: 'flex-inline' }}
   label={txStatus.errorMessage===""?"SUCCESS":"ERROR"}
   size="small"
   variant="outlined"  
   key="result"
   />
-
+  &nbsp;
+  <Chip 
+  color={txStatus.status<4?"info":"success"}
+  sx={{fontWeight:700, fontSize: "0.9em", display: 'flex-inline' }}
+  label={`${fmtTransactionStatus(txStatus.status)}`} 
+  size="small"
+  variant="outlined"  
+  key="status"
+  />
+</Item>
 </Group>
+</Box>
 
-
-<br/>
-<Box direction="row" spacing={2}  sx={{fontWeight:700, display: 'flex',  flexWrap: 'wrap' }}
+<Box direction="row" spacing={2}  sx={{ display: 'flex',  flexWrap: 'wrap' }}
 >
-
 <Group title="Proposer" exact>
 <AccountAddress address={txInfo?.proposalKey?.address} key="proposer" sx={{ display:"flex-inline" }}/>
 </Group>
@@ -136,6 +153,21 @@ return (
  ))}
 </Group>
 </Box>
+
+{txBlock &&
+<Box direction="row" spacing={2}  sx={{ display: 'flex',  flexWrap: 'wrap' }}
+>
+  <Group title="Block" exact>
+  <Item icon="hashtag">{txBlock?.height}</Item>
+  <Item icon="fingerprint"> {txBlock?.id}</Item>
+  <Item icon="clock">{ago(new Date(txBlock?.timestamp))} - {dateFormat(new Date(txBlock?.timestamp))}</Item>
+
+</Group>
+
+</Box>}
+
+
+
 
 
       <TabContext padding={0} value={value}>

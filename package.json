@@ -17,6 +17,7 @@
     "@onflow/flow-cadut-plugin-find": "^0.0.1",
     "@onflow/types": "^1.0.5",
     "ace-builds": "^1.4.12",
+    "dateformat": "^5.0.3",
     "dedent": "^0.7.0",
     "monaco-editor": "^0.34.1",
     "react": "17.0.2",
@@ -27,6 +28,7 @@
     "react-scripts": "4.0.0",
     "react-syntax-highlighter": "^15.5.0",
     "recoil": "0.3.1",
+    "s-ago": "^2.2.0",
     "styled-components": "^5.3.0",
     "swr": "^0.5.6"
   },
