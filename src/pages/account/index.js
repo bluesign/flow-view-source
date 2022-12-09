@@ -58,7 +58,7 @@ export function AccountSideBar() {
 
 
   return (
-    <Stack spacing={3} borderRight={1} >
+    <Stack margin={1} spacing={3} borderRight={1} >
       
      
         <Group title={
@@ -98,7 +98,7 @@ export function AccountSideBar() {
       <Group icon="box-heart" title={`NFT Collections`} >
         {accountStorage && accountStorage?.nft.map(collection => (
           <Item icon="folder" key={collection.path.domain+"/"+collection.path.identifier}  as={Link} to={storageUrl(address, collection.path.domain, collection.path.identifier)}>
-            {collection.path.identifier} ({collection.count})
+            {collection.path.identifier}({collection.count})
           </Item>
         
         ))}

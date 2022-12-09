@@ -16,15 +16,16 @@ export function fmtTransactionStatus(status) {
 
 export function cadenceValueToDict(payload){
   if (!payload) return null 
+
   if (payload["type"]==="Array")
     return cadenceValueToDict(payload["value"])
 
+
   if (payload["type"]==="Dictionary"){
-    
       var resDict = {}
       payload["value"].forEach(element => {
+        console.log(element)
         resDict[cadenceValueToDict(element["key"])] = cadenceValueToDict(element["value"])
-
       });
       return resDict
     }
@@ -38,6 +39,7 @@ export function cadenceValueToDict(payload){
       return cadenceValueToDict(payload["value"])
     }
       if (payload["type"]==="Type"){
+        console.log(payload)
       return cadenceValueToDict(payload["value"]["staticType"])
     }
     
@@ -54,7 +56,7 @@ export function cadenceValueToDict(payload){
       res["address"] = payload["value"]["address"]
       res["path"] = cadenceValueToDict(payload["value"]["path"])
       res["borrowType"] = cadenceValueToDict(payload["value"]["borrowType"])
-      return res //return "Capability<" + res["address"] + ", " + res["borrowType"] + ">(" + res["path"] + ")"
+      return {"<Capability>" : res}
     }
 
     if (payload["type"]==="Path"){

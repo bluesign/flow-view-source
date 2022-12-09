@@ -2,6 +2,7 @@ import {useParams} from "react-router-dom"
 import {Bad} from "../../comps/text"
 import {useAccount} from "../../hooks/use-account"
 import {Group, Item} from "../../comps/base"
+import Box from '@mui/material/Box';
 
 const fmtCurve = i =>
   ({
@@ -22,7 +23,7 @@ export function Keys() {
   const keys = account?.keys ? account?.keys: []
 
   return (
-      <div style={{padding: "5px"}}>
+      <Box sx={{marginLeft: 1, padding: "5px"}}>
         {(keys || []).map(key => (
           <Group title={key.publicKey} icon="key" key={key.index}>
             {key.revoked && (
@@ -37,7 +38,7 @@ export function Keys() {
             <Item icon="dna">Sequence Number: {key.sequenceNumber}</Item>
           </Group>
         ))}
-      </div>
+      </Box>
   )
 }
 

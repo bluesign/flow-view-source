@@ -77,14 +77,16 @@ const ItemRoot = styled.div`
   border: none;
   padding: 0px;
   display: block;
-  white-space: no-wrap;
+
   font-family: var(--font-family);
   & > span {
-    white-space: nowrap;
+    white-space: wrap;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: top;
     justify-content: flex-start;
+    vertical-align: top;
+
   }
   ${p =>
     p.onClick || p.href || p.to
@@ -293,5 +295,6 @@ export const accountUrl = (addr) => `/${withPrefix(addr)}`
 export const keysUrl = (addr) => `/${withPrefix(addr)}/keys`
 export const contractUrl = (addr, name) => `${accountUrl(addr)}/${name}`
 export const storageUrl = (addr, domain, name) => `${accountUrl(addr)}/${domain}/${name.replace("/","\\")}`
+export const nftUrl = (addr, domain, name, id) => `${accountUrl(addr)}/${domain}/${name.replace("/","\\")}/${id}`
 
 

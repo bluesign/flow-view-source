@@ -36,6 +36,8 @@ export const H5 = styled.h5`
 
 export const Muted = styled.span`
   color: var(--mute);
+  display: inline;
+  vertical-align: top;
 `
 
 export const Good = styled.span`

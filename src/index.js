@@ -80,13 +80,16 @@ ReactDOM.render(
           <Route exact path="/:txId([0-9a-fA-F]{64})" component={TxStatus} />
           <Route exact path="/:address([0-9a-fA-F]{8,16})" component={Account} />
           <Route exact path="/:address([0-9a-fA-F]{8,16})/keys" component={Account}/>
+          <Route exact path="/:address([0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path/:uuid" component={Account}/>
           <Route exact path="/:address([0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path" component={Account}/>
           <Route exact path="/:address([0-9a-fA-F]{8,16})/contract/new" component={AccountContractNew} />
           <Route exact path="/:address([0-9a-fA-F]{8,16})/:name" component={Account} />
         
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})" component={Account} />
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/keys" component={Account}/>
+          <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path/:uuid" component={Account}/>
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path" component={Account}/>
+
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/contract/new" component={AccountContractNew} />
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/:name" component={Account} />
          
