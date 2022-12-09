@@ -45,12 +45,36 @@ const card =  {
   borderColor: "gray",
 }
 
+const cardBig =  {
+  fontSize: "13px",
+  margin: 1,
+  padding: 1,
+  borderRadius: 4,
+  width: 400,
+  textAlign: 'left',
+  backgroundColor: "black",
+  border: 1,
+  borderColor: "gray",
+}
+
+const media =  {
+  display: "flex",
+  margin: 1,
+  padding: 0,
+  borderRadius: 2,
+  width: 200,
+  textAlign: 'left',
+  backgroundColor: "black",
+  border: 1,
+  borderColor: "gray",
+}
 
 
 function NFTCollectionDisplay({view}){
   if (!view) return null
   view = view["A.1d7e57aa55817448.MetadataViews.NFTCollectionDisplay"]
   return (
+    <Box width={600}>
     <Group title="Collection Information">
       <Item>Name:&nbsp; <Muted>{view["name"]}</Muted></Item>
       <Item>Description:&nbsp; <Muted>{view["description"]}</Muted></Item>
@@ -58,6 +82,7 @@ function NFTCollectionDisplay({view}){
       <Item>Banner Image:&nbsp; <Muted>{parseFile(view["bannerImage"])}</Muted></Item>
       <Item>Square Image:&nbsp; <Muted>{parseFile(view["squareImage"])}</Muted></Item>
     </Group>
+    </Box>
   )
 }
 
@@ -65,16 +90,24 @@ function NFTDisplayText({view}){
   if (!view) return null
   view = view["A.1d7e57aa55817448.MetadataViews.Display"]
   return (
-    <Group title="NFT Information">
-      <Item>Name:&nbsp; <Muted>{view["name"]}</Muted></Item>
-      <Item>Description:&nbsp;<br/> <Muted>{view["description"]}</Muted></Item>
-      <Item>Thumbnail:&nbsp; <Muted>{parseFile(view["thumbnail"])}</Muted></Item>
-    </Group>
+    <Card sx={cardBig} raised>
+    <CardMedia 
+        src = {parseFile(view["thumbnail"])}
+        component = "img"
+    />
+    <CardContent>
+      <Item>{view["name"]}</Item>
+      <Item><Muted>{view["description"]}</Muted></Item>
+    </CardContent>
+  </Card>
+
+   
   )
 }
 
 function parseFile(f){
   if (!f) return ""
+  console.log(f)
   if (f["A.1d7e57aa55817448.MetadataViews.Media"]){
     f = f["A.1d7e57aa55817448.MetadataViews.Media"]["file"]
   }
@@ -91,15 +124,48 @@ function parseFile(f){
   
 }
 
+function parseMime(f){
+  if (!f) return ""
+  if (f["A.1d7e57aa55817448.MetadataViews.Media"]){
+    return f["A.1d7e57aa55817448.MetadataViews.Media"]["mediaType"]
+  }
+  
+  return ""
+  
+}
+
 function Medias({view}){
   if (!view) return null
   view = view["A.1d7e57aa55817448.MetadataViews.Medias"]
 
   return (
     <Group title="Medias">
+      <Box padding={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
+
+    
       {view["items"].map(item=>
-      <Item>{parseFile(item)}</Item>
+      {
+        var mime = parseMime(item)
+        if (mime.indexOf("video")>-1){
+          mime="video"
+        }
+        else{
+          mime = "img"
+        }
+        return (
+       <Card sx={media} raised>
+       <CardMedia 
+           src = {parseFile(item)}
+           component = {mime}
+           controls
+       />
+       {parseFile(item)}
+     </Card>
+        )
+      }
+      
     )}
+    </Box>
     </Group>
   )
 }
@@ -274,7 +340,7 @@ export function Content() {
                   pub fun main(address: Address) : [{String:AnyStruct}]{
                     var res :  [{String:AnyStruct}] = []
                     getAuthAccount(address).forEach${domain}(fun (path: ${domain}Path, type: Type): Bool {
-                      for banned in ["MusicBlockCollection", "FantastecNFTCollection"]{
+                      for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection"]{
                       if path==${domain}Path(identifier: banned){
                         return true
                       }
@@ -354,16 +420,20 @@ export function Content() {
     }
 {uuid &&
 <div>
-  <NFTCollectionDisplay view={storage["A.1d7e57aa55817448.MetadataViews.NFTCollectionDisplay"]}/>
-  <NFTDisplayText view={storage["A.1d7e57aa55817448.MetadataViews.Display"]}/> 
+<Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
+<NFTDisplayText view={storage["A.1d7e57aa55817448.MetadataViews.Display"]}/> 
+  <Box marginLeft={1} display={"flex"} flexDirection={"column"} flexWrap={"wrap"}> 
+    <NFTCollectionDisplay view={storage["A.1d7e57aa55817448.MetadataViews.NFTCollectionDisplay"]}/>
+    <ExternalURL view={storage["A.1d7e57aa55817448.MetadataViews.ExternalURL"]}/>
+    <Editions view={storage["A.1d7e57aa55817448.MetadataViews.Editions"]}/>
+    <Serial view={storage["A.1d7e57aa55817448.MetadataViews.Serial"]}/>
+    <Royalties view={storage["A.1d7e57aa55817448.MetadataViews.Royalties"]}/> 
+    <Traits view={storage["A.1d7e57aa55817448.MetadataViews.Traits"]}/> 
 
-  <ExternalURL view={storage["A.1d7e57aa55817448.MetadataViews.ExternalURL"]}/>
-  <Editions view={storage["A.1d7e57aa55817448.MetadataViews.Editions"]}/>
-  <Serial view={storage["A.1d7e57aa55817448.MetadataViews.Serial"]}/>
+  </Box>
+</Box>
   <Medias view={storage["A.1d7e57aa55817448.MetadataViews.Medias"]}/> 
-
-  <Traits view={storage["A.1d7e57aa55817448.MetadataViews.Traits"]}/> 
-  <Royalties view={storage["A.1d7e57aa55817448.MetadataViews.Royalties"]}/> 
+  
   
     </div>
 }

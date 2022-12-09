@@ -24,7 +24,6 @@ export function cadenceValueToDict(payload){
   if (payload["type"]==="Dictionary"){
       var resDict = {}
       payload["value"].forEach(element => {
-        console.log(element)
         resDict[cadenceValueToDict(element["key"])] = cadenceValueToDict(element["value"])
       });
       return resDict
@@ -39,7 +38,6 @@ export function cadenceValueToDict(payload){
       return cadenceValueToDict(payload["value"])
     }
       if (payload["type"]==="Type"){
-        console.log(payload)
       return cadenceValueToDict(payload["value"]["staticType"])
     }
     

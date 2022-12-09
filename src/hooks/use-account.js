@@ -62,10 +62,11 @@ export function useAccount(address) {
           var ft : [{String:AnyStruct}] = []
 
           getAuthAccount(addr).forEachStored(fun (path: StoragePath, type: Type): Bool {
-            for banned in ["MusicBlockCollection", "FantastecNFTCollection"]{
+            for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection","LibraryPassCollection"]{
             if path==StoragePath(identifier: banned){
                 return true
             }}
+            
             if type.isSubtype(of: Type<@NonFungibleToken.Collection>()){
               var collection = getAuthAccount(addr).borrow<&NonFungibleToken.Collection>(from:path)!
               nft.append({"path":path, "count":collection.getIDs().length})
@@ -77,6 +78,7 @@ export function useAccount(address) {
             else{
               s.append(path)
             }
+            s.append(path)
             return true
           })
           getAuthAccount(addr).forEachPublic(fun (path: PublicPath, type: Type): Bool {
