@@ -165,14 +165,19 @@ export function Content() {
       (domain==="public" || domain==="private") && 
       <Box direction="row">
       {stored.map(link=>
+        
         <div>
+        {link &&
         <Group icon="link" title={link.path}> 
         <Item icon="text">{link.borrowType}</Item>
+        
         <Item icon="crosshairs" as={Link} to={storageUrl(address,  link.target.split("/")[0],  link.target.split("/")[1])}>{link.target}</Item>
         
         </Group>
+}
          <br/>
          </div>
+        
       )}
       </Box>
     }

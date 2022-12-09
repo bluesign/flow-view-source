@@ -22,7 +22,15 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
      // code = [code]
     }
     //code =  JSON.stringify(code,  null, 2).split("\n").map(line=>line.substring(2)).slice(1).join("\n")
-    code =  JSON.stringify(code,  null, 2)
+    //code =  JSON.stringify(code,  null, 2)
+
+    const YAML = require('json-to-pretty-yaml');
+    code = YAML.stringify(code);
+    lang="yaml"
+    if (code.split("\n")[0].trim()===""){
+      code = code.split("\n").slice(1).join("\n")
+    }
+    
   }
   useEffect(() => {
       if (!monaco) return
@@ -41,8 +49,9 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
     else{
       var address  = node.value.match(/(0x)[0-9a-f]{12,16}/g)
       if (address){
+        node.value = address[0]
         parent.tagName = "a" 
-        parent.properties.href = `https://f.dnz.dev/${address}`
+        parent.properties.href = `/${address}`
         parent.properties.title = `Check account - ${address}`
       }
       
@@ -61,9 +70,10 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
           language={lang} 
           style={vs2015}
           customStyle={{
-            fontSize:"0.9em", 
+            fontSize:"13px", 
             margin:0,
             padding:0,
+            fontFamily: "MonoLisa,JetBrains Mono,Fira Code,monospace",
             backgroundColor:"transparent"
           }}
           renderer={({rows, stylesheet, useInlineStyles})=>{

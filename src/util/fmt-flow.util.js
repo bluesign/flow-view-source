@@ -40,6 +40,11 @@ export function cadenceValueToDict(payload){
       if (payload["type"]==="Type"){
       return cadenceValueToDict(payload["value"]["staticType"])
     }
+    
+    if (payload["type"]==="Address"){
+      return payload["value"]
+    }
+    
 
     if (payload["kind"] && payload["kind"]==="Capability"){
       return payload["type"]["type"]["typeID"]
