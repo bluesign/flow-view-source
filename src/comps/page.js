@@ -10,7 +10,6 @@ import { useHistory } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import {NavLink as Link, useParams} from "react-router-dom"
 
 
 const Root = styled.div`
@@ -103,7 +102,6 @@ const Search = mstyled('div')(({ theme }) => ({
 
 export default function Component({sideContent, children, ...rest})  { 
   const [open, setState] = useState(true);
-  const {address} = useParams()
 
   const toggleDrawer = () => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
