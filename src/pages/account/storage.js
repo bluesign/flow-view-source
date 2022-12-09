@@ -154,7 +154,7 @@ export function Content() {
   var hasCustomDisplay = stored && (hasNFTdisplay)
   
   return (
-  <Box display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
+  <Box margin={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
     
     {hasNFTdisplay && stored && stored.map((displayView) => (
       <NFTDisplay view={displayView}/>
@@ -166,7 +166,7 @@ export function Content() {
       <Box direction="row">
       {stored.map(link=>
         <div>
-        <Group title={link.path}> 
+        <Group icon="link" title={link.path}> 
         <Item icon="text">{link.borrowType}</Item>
         <Item icon="crosshairs" as={Link} to={storageUrl(address,  link.target.split("/")[0],  link.target.split("/")[1])}>{link.target}</Item>
         
@@ -175,8 +175,6 @@ export function Content() {
          </div>
       )}
       </Box>
-      
-      
     }
      
     {!hasCustomDisplay && stored  && 
