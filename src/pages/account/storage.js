@@ -76,8 +76,8 @@ function NFTCollectionDisplay({view}){
   return (
     <Box width={600}>
     <Group title="Collection Information">
-      <Item>Name:&nbsp; <Muted>{view["name"]}</Muted></Item>
-      <Item>Description:&nbsp; <Muted>{view["description"]}</Muted></Item>
+      <Item>{view["name"]}</Item>
+      <Item><Muted>{view["description"]}</Muted></Item>
       <Item>URL:&nbsp; <Muted>{view["externalURL"]["A.1d7e57aa55817448.MetadataViews.ExternalURL"]["url"]}</Muted></Item>
       <Item>Banner Image:&nbsp; <Muted>{parseFile(view["bannerImage"])}</Muted></Item>
       <Item>Square Image:&nbsp; <Muted>{parseFile(view["squareImage"])}</Muted></Item>
