@@ -108,7 +108,7 @@ return (
 
 <Box direction="row" spacing={2}  sx={{ display: 'flex',  flexWrap: 'wrap' }}
 >
-  
+
 <Group title="Transaction" exact >
 
 <Item icon="fingerprint"> {txId} </Item>
@@ -195,8 +195,11 @@ return (
           
         {txInfo?.args.map((arg,i) => {
             return (
+              
+                <Group title={argLabels[i]} exact>
                 <CodeEditor key={"arg"+i} prefix={argLabels[i]} type={arg["type"]} index={i} code={cadenceValueToDict(arg)} lang="json" />
-            )
+              </Group>
+            ) 
           })}
         
         </TabPanel>
@@ -204,7 +207,9 @@ return (
           
           {txStatus.events.map((ev,i) => {
             return (
-                <CodeEditor  key={"ev"+i}  prefix={ev.type} code={ev.data} lang="json" />
+                <Group title={ev.type} exact>
+                    <CodeEditor  key={"ev"+i}  prefix={ev.type} code={ev.data} lang="json" />
+                </Group>
             )
           })}
           </TabPanel>

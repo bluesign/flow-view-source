@@ -13,9 +13,16 @@ function setEditorReadOnly(readOnly) {
 
 export default function CodeEditor({prefix="", type="", index=0, code = "", onChange = null, name = "RAWR", lang="rust" }) {
   const monaco  = useMonaco();
-
+ 
+  const isObject = obj => {
+    return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
+  }
   if (prefix!==""){
-    code = prefix + " - "  + JSON.stringify(code,  null, 4)
+    if (!isObject(code)){
+     // code = [code]
+    }
+    //code =  JSON.stringify(code,  null, 2).split("\n").map(line=>line.substring(2)).slice(1).join("\n")
+    code =  JSON.stringify(code,  null, 2)
   }
   useEffect(() => {
       if (!monaco) return
@@ -23,30 +30,50 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
 
   }, [monaco]);
 
+  function checkNodes(parent, node){
+    
+    if (node.children) {
+      node.children = node.children.map(child=>{
+        child = checkNodes(node, child)
+        return child
+      })
+    }
+    else{
+      var address  = node.value.match(/(0x)[0-9a-f]{12,16}/g)
+      if (address){
+        parent.tagName = "a" 
+        parent.properties.href = `https://f.dnz.dev/${address}`
+        parent.properties.title = `Check account - ${address}`
+      }
+      
+      var contractEvent  = node.value.match(/A\.[0-9a-f]{12,16}\.(.*?)\.(.*?)/g)
+      if (contractEvent){
+        console.log(contractEvent)
+      }
+
+    }
+
+    return node
+  }
   if (lang!=="cadence"){
       return (
       <SyntaxHighlighter 
           language={lang} 
           style={vs2015}
           customStyle={{
-            fontSize:"0.9em", 
+            fontSize:"0.8em", 
+            margin:0,
+            padding:0,
             backgroundColor:"transparent"
           }}
           renderer={({rows, stylesheet, useInlineStyles})=>{
             return(
               <>
                 {rows.map(node=>{
+                  node = checkNodes(node, node)
                   //console.log({node})
                   const {style, key} = node
-                  if(node.children.length === 3){
-                    if(node.children[0].children[0].value.includes("import")){
-                      const address = node.children[1].children[0].value
-                      // add regexp here to check that his is address
-                      node.children[1].tagName = "a"
-                      node.children[1].properties.href = `https://f.dnz.dev/${address}`
-                      node.children[1].properties.title = `Check account - ${address}`
-                    }
-                  }
+               
                   return createElement({
                     node,
                     stylesheet,
