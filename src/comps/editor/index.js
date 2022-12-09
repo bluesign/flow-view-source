@@ -49,17 +49,17 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
     else{
       var address  = node.value.match(/(0x)[0-9a-f]{12,16}/g)
       if (address){
-        node.value = address[0]
+        node.value = node.value.replace("\""+address[0]+"\"", address[0])
         parent.tagName = "a" 
         parent.properties.href = `/${address}`
         parent.properties.title = `Check account - ${address}`
       }
       
-      var contractEvent  = node.value.match(/A\.[0-9a-f]{12,16}\.(.*?)\.(.*?)/g)
+     /* var contractEvent  = node.value.match(/A\.[0-9a-f]{12,16}\.(.*?)\.(.*?)/g)
       if (contractEvent){
         console.log(contractEvent)
       }
-
+*/
     }
 
     return node
@@ -81,7 +81,6 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
               <>
                 {rows.map(node=>{
                   node = checkNodes(node, node)
-                  //console.log({node})
                   const {style, key} = node
                
                   return createElement({
