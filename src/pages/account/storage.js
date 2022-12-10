@@ -266,9 +266,13 @@ function NFTDisplay({id, view}){
 export function Content() {
   const {address, domain, path, uuid} = useParams()
   const [storage, setStorage] = useState(null)
+  const [storageRaw, setStorageRaw] = useState(null)
+
 console.log(uuid)
   useEffect(() => {
     setStorage(null)
+    setStorageRaw(null)
+
       async function browseStorage(path){
           fcl.send([fcl.script(`
                  import MetadataViews from 0xMetadataViews
@@ -299,6 +303,8 @@ console.log(uuid)
                 )]
                 ).then((v)=>{
                    setStorage(cadenceValueToDict(v.encodedData, true))
+                   setStorageRaw(cadenceValueToDict(v.encodedData, false))
+
               })
         }
         async function browseNFT(path, uuid){
@@ -333,6 +339,8 @@ console.log(uuid)
                   )]
                   ).then((v)=>{
                     setStorage(cadenceValueToDict(v.encodedData, true))
+                    setStorageRaw(cadenceValueToDict(v.encodedData, false))
+
                   })
           }
         async function browseLink(domain, path){
@@ -363,6 +371,8 @@ console.log(uuid)
                 )]
                 ).then((v)=>{
                   setStorage(cadenceValueToDict(v.encodedData, false))
+                  setStorageRaw(cadenceValueToDict(v.encodedData, false))
+
                 })
         }
         
@@ -441,7 +451,7 @@ console.log(uuid)
      
     {uuid==null && !hasCustomDisplay && storage && 
       (domain==="storage" ) &&  
-      <CodeEditor key="storage" prefix={domain} type="" index={0} code={storage} lang="json" />
+      <CodeEditor key="storage" prefix={domain} type="" index={0} code={storageRaw} lang="json" />
     }
     
     </Box>
