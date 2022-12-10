@@ -14,17 +14,28 @@ export function fmtTransactionStatus(status) {
 }
 
 
-export function cadenceValueToDict(payload){
+export function cadenceValueToDict(payload, brief){
   if (!payload) return null 
 
-  if (payload["type"]==="Array")
-    return cadenceValueToDict(payload["value"])
-
+  if (payload["type"]==="Array"){
+    return cadenceValueToDict(payload["value"], brief)
+  }
 
   if (payload["type"]==="Dictionary"){
       var resDict = {}
       payload["value"].forEach(element => {
-        resDict[cadenceValueToDict(element["key"])] = cadenceValueToDict(element["value"])
+      
+      var skey = cadenceValueToDict(element["key"], brief)
+          
+        if (brief && skey ){
+          if (skey.toString().indexOf("A.")===0){
+            skey = skey.toString().split(".").slice(2).join(".")
+          }
+          resDict[skey] = cadenceValueToDict(element["value"], brief)
+          
+        }else{
+          resDict[cadenceValueToDict(element["key"], brief)] = cadenceValueToDict(element["value"], brief)
+        }
       });
       return resDict
     }
@@ -35,10 +46,10 @@ export function cadenceValueToDict(payload){
     
     
     if (payload["type"]==="Optional"){
-      return cadenceValueToDict(payload["value"])
+      return cadenceValueToDict(payload["value"], brief)
     }
       if (payload["type"]==="Type"){
-      return cadenceValueToDict(payload["value"]["staticType"])
+      return cadenceValueToDict(payload["value"]["staticType"], brief)
     }
     
     if (payload["type"]==="Address"){
@@ -52,8 +63,8 @@ export function cadenceValueToDict(payload){
     if (payload["type"]==="Capability"){
       var res = {}
       res["address"] = payload["value"]["address"]
-      res["path"] = cadenceValueToDict(payload["value"]["path"])
-      res["borrowType"] = cadenceValueToDict(payload["value"]["borrowType"])
+      res["path"] = cadenceValueToDict(payload["value"]["path"], brief)
+      res["borrowType"] = cadenceValueToDict(payload["value"]["borrowType"], brief)
       return {"<Capability>" : res}
     }
 
@@ -68,7 +79,7 @@ export function cadenceValueToDict(payload){
     if (Array.isArray(payload)){
       var resArray = []
       for (const i in payload) {
-        resArray.push(cadenceValueToDict(payload[i]))
+        resArray.push(cadenceValueToDict(payload[i], brief))
       }
       return resArray
     }
@@ -76,18 +87,23 @@ export function cadenceValueToDict(payload){
 
 
     if (payload["type"]==="Struct" || payload["type"]==="Resource"){
-      return cadenceValueToDict(payload["value"])
+      return cadenceValueToDict(payload["value"], brief)
     }
 
     if (payload["id"]!=null && payload["id"].indexOf("A.")===0){
       
+      console.log(brief, payload)
       res = {}
       for (const f in payload["fields"]){
-        res[payload["fields"][f]["name"]] =  cadenceValueToDict(payload["fields"][f]["value"])
+          res[payload["fields"][f]["name"]] =  cadenceValueToDict(payload["fields"][f]["value"], brief)
       }
       var res2 = {}
-      res2[payload["id"]] = res
-
+      if (brief){
+        res2[payload["id"].split(".").slice(2).join(".")] = res
+      }
+      else{
+        res2[payload["id"]] = res
+      }
       return res2
     }
 

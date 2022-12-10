@@ -197,7 +197,7 @@ return (
             return (
               
                 <Group title={argLabels[i]} exact>
-                <CodeEditor key={"arg"+i} prefix={argLabels[i]} type={arg["type"]} index={i} code={cadenceValueToDict(arg)} lang="json" />
+                <CodeEditor key={"arg"+i} prefix={argLabels[i]} type={arg["type"]} index={i} code={cadenceValueToDict(arg, false)} lang="json" />
               </Group>
             ) 
           })}

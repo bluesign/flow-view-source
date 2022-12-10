@@ -86,10 +86,10 @@ export function AccountSideBar() {
 
         <Group icon="warehouse" title={`FT Vaults`} >
         {accountStorage && accountStorage?.ft.sort(function compareFn(a, b) { return a.balance < b.balance}).map(vault => (
-          <Box><Item icon="coins" key={vault.path.domain+"/"+vault.path.identifier} as={Link} to={storageUrl(address, vault.path.domain, vault.path.identifier)}>
-            {vault.path.identifier} [ {vault.balance} ]
-          </Item>
-        </Box>
+            <Item icon="coins" key={vault.path.domain+"/"+vault.path.identifier} as={Link} to={storageUrl(address, vault.path.domain, vault.path.identifier)}>
+            {vault.path.identifier}({vault.balance})
+            </Item>
+        
         ))}
       </Group
       >

@@ -72,13 +72,13 @@ const media =  {
 
 function NFTCollectionDisplay({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.NFTCollectionDisplay"]
+  view = view["MetadataViews.NFTCollectionDisplay"]
   return (
     <Box width={600}>
     <Group title="Collection Information">
       <Item>{view["name"]}</Item>
       <Item><Muted>{view["description"]}</Muted></Item>
-      <Item>URL:&nbsp; <Muted>{view["externalURL"]["A.1d7e57aa55817448.MetadataViews.ExternalURL"]["url"]}</Muted></Item>
+      <Item>URL:&nbsp; <Muted>{view["externalURL"]["MetadataViews.ExternalURL"]["url"]}</Muted></Item>
       <Item>Banner Image:&nbsp; <Muted>{parseFile(view["bannerImage"])}</Muted></Item>
       <Item>Square Image:&nbsp; <Muted>{parseFile(view["squareImage"])}</Muted></Item>
     </Group>
@@ -88,7 +88,8 @@ function NFTCollectionDisplay({view}){
 
 function NFTDisplayText({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.Display"]
+  console.log(view)
+  view = view["MetadataViews.Display"]
   return (
     <Card sx={cardBig} raised>
     <CardMedia 
@@ -107,17 +108,17 @@ function NFTDisplayText({view}){
 
 function parseFile(f){
   if (!f) return ""
-  console.log(f)
-  if (f["A.1d7e57aa55817448.MetadataViews.Media"]){
-    f = f["A.1d7e57aa55817448.MetadataViews.Media"]["file"]
+  
+  if (f["MetadataViews.Media"]){
+    f = f["MetadataViews.Media"]["file"]
   }
 
-  if (f["A.1d7e57aa55817448.MetadataViews.HTTPFile"]){
-    return f["A.1d7e57aa55817448.MetadataViews.HTTPFile"]["url"]
+  if (f["MetadataViews.HTTPFile"]){
+    return f["MetadataViews.HTTPFile"]["url"]
   }
 
-  if (f["A.1d7e57aa55817448.MetadataViews.IPFSFile"]){
-    return "https://ipfs.io/ipfs/"+f["A.1d7e57aa55817448.MetadataViews.IPFSFile"]["cid"]
+  if (f["MetadataViews.IPFSFile"]){
+    return "https://ipfs.io/ipfs/"+f["MetadataViews.IPFSFile"]["cid"]
   }
 
   return ""
@@ -126,8 +127,8 @@ function parseFile(f){
 
 function parseMime(f){
   if (!f) return ""
-  if (f["A.1d7e57aa55817448.MetadataViews.Media"]){
-    return f["A.1d7e57aa55817448.MetadataViews.Media"]["mediaType"]
+  if (f["MetadataViews.Media"]){
+    return f["MetadataViews.Media"]["mediaType"]
   }
   
   return ""
@@ -136,7 +137,7 @@ function parseMime(f){
 
 function Medias({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.Medias"]
+  view = view["MetadataViews.Medias"]
 
   return (
     <Group title="Medias">
@@ -172,12 +173,12 @@ function Medias({view}){
 
 function Royalties({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.Royalties"]
+  view = view["MetadataViews.Royalties"]
 
   return (
     <Group title="Royalties">
       {view["cutInfos"] && view["cutInfos"].map(item=>
-      <Item>{item["A.1d7e57aa55817448.MetadataViews.Royalty"]["description"]}:&nbsp; <Muted> {item["A.1d7e57aa55817448.MetadataViews.Royalty"]["receiver"]["<Capability>"]["address"]} {item["A.1d7e57aa55817448.MetadataViews.Royalty"]["cut"]}  </Muted></Item>
+      <Item>{item["MetadataViews.Royalty"]["description"]}:&nbsp; <Muted> {item["MetadataViews.Royalty"]["receiver"]["<Capability>"]["address"]} {item["MetadataViews.Royalty"]["cut"]}  </Muted></Item>
       )
       }
     </Group>
@@ -186,13 +187,13 @@ function Royalties({view}){
 
 function Editions({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.Editions"]
-
+  view = view["MetadataViews.Editions"]
+  console.log(view)
   return (
     <Group title="Edition">
       {view["infoList"] && view["infoList"].map(item=>
       <div>
-      <Item>{item["A.1d7e57aa55817448.MetadataViews.Edition"]["name"]} &nbsp; <Muted>{item["A.1d7e57aa55817448.MetadataViews.Edition"]["number"]} / {item["A.1d7e57aa55817448.MetadataViews.Edition"]["max"]}</Muted></Item>
+      <Item>{item["MetadataViews.Edition"]["name"]} &nbsp; <Muted>{item["MetadataViews.Edition"]["number"]} / {item["MetadataViews.Edition"]["max"]}</Muted></Item>
       </div>)
       }
     </Group>
@@ -203,7 +204,7 @@ function Editions({view}){
 
 function ExternalURL({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.ExternalURL"]
+  view = view["MetadataViews.ExternalURL"]
 
   return (
     <Group title="External URL">
@@ -216,7 +217,7 @@ function ExternalURL({view}){
 
 function Serial({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.Serial"]
+  view = view["MetadataViews.Serial"]
 
   return (
     <Group title="Serial #">
@@ -227,12 +228,12 @@ function Serial({view}){
 
 function Traits({view}){
   if (!view) return null
-  view = view["A.1d7e57aa55817448.MetadataViews.Traits"]
+  view = view["MetadataViews.Traits"]
 
   return (
     <Group title="Traits">
     {view["traits"] && view["traits"].map(trait=>   
-      <Item>{trait["A.1d7e57aa55817448.MetadataViews.Trait"]["name"]}:&nbsp;<Muted>{trait["A.1d7e57aa55817448.MetadataViews.Trait"]["value"]}</Muted> </Item>)}
+      <Item>{trait["MetadataViews.Trait"]["name"]}:&nbsp;<Muted>{trait["MetadataViews.Trait"]["value"]}</Muted> </Item>)}
     </Group>
   )
 }
@@ -248,11 +249,11 @@ function NFTDisplay({id, view}){
       <CardMedia 
           component="img"
           height="100"
-          image = {parseFile(view["A.1d7e57aa55817448.MetadataViews.Display"]["thumbnail"])}
+          image = {parseFile(view["MetadataViews.Display"]["thumbnail"])}
       />
       <CardContent>
         <Typography component="div" sx={style.heading}>
-          {view["A.1d7e57aa55817448.MetadataViews.Display"]["name"]}
+          {view["MetadataViews.Display"]["name"]}
         </Typography>
        </CardContent>
        </CardActionArea>
@@ -265,7 +266,7 @@ function NFTDisplay({id, view}){
 export function Content() {
   const {address, domain, path, uuid} = useParams()
   const [storage, setStorage] = useState(null)
-
+console.log(uuid)
   useEffect(() => {
     setStorage(null)
       async function browseStorage(path){
@@ -297,7 +298,7 @@ export function Content() {
                   [fcl.arg(address, t.Address), fcl.arg(path, t.String)]
                 )]
                 ).then((v)=>{
-                   setStorage(cadenceValueToDict(v.encodedData))
+                   setStorage(cadenceValueToDict(v.encodedData, true))
               })
         }
         async function browseNFT(path, uuid){
@@ -331,7 +332,7 @@ export function Content() {
                     [fcl.arg(address, t.Address), fcl.arg(path, t.String), fcl.arg(uuid, t.UInt64)]
                   )]
                   ).then((v)=>{
-                    setStorage(cadenceValueToDict(v.encodedData))
+                    setStorage(cadenceValueToDict(v.encodedData, true))
                   })
           }
         async function browseLink(domain, path){
@@ -361,13 +362,13 @@ export function Content() {
                   [fcl.arg(address, t.Address)]
                 )]
                 ).then((v)=>{
-                  setStorage(cadenceValueToDict(v.encodedData))
+                  setStorage(cadenceValueToDict(v.encodedData, false))
                 })
         }
         
       if (domain==="storage") {
         
-        if (!uuid){
+        if (uuid==null){
           browseStorage(path)
         }
         else{
@@ -387,14 +388,14 @@ export function Content() {
   }
 
 
-  var hasNFTdisplay = storage &&  !Array.isArray(storage) && Object.keys(storage).length && storage[Object.keys(storage)[0]]["A.1d7e57aa55817448.MetadataViews.Display"]
+  var hasNFTdisplay = storage &&  !Array.isArray(storage) && Object.keys(storage).length && storage[Object.keys(storage)[0]]["MetadataViews.Display"]
   var hasCustomDisplay = storage && (hasNFTdisplay)
   
   return (
   <Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
     
     {hasNFTdisplay && storage && Object.keys(storage).map((displayViewKey) => (
-      <NFTDisplay view={storage[displayViewKey]} id={displayViewKey}/>
+      <NFTDisplay key={displayViewKey} view={storage[displayViewKey]} id={displayViewKey}/>
     )
     )}
 
@@ -418,30 +419,29 @@ export function Content() {
       )}
       </Box>
     }
-{uuid &&
+{uuid!=null &&
 <div>
 <Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
-<NFTDisplayText view={storage["A.1d7e57aa55817448.MetadataViews.Display"]}/> 
+<NFTDisplayText view={storage["MetadataViews.Display"]}/> 
   <Box marginLeft={1} display={"flex"} flexDirection={"column"} flexWrap={"wrap"}> 
-    <NFTCollectionDisplay view={storage["A.1d7e57aa55817448.MetadataViews.NFTCollectionDisplay"]}/>
-    <ExternalURL view={storage["A.1d7e57aa55817448.MetadataViews.ExternalURL"]}/>
-    <Editions view={storage["A.1d7e57aa55817448.MetadataViews.Editions"]}/>
-    <Serial view={storage["A.1d7e57aa55817448.MetadataViews.Serial"]}/>
-    <Royalties view={storage["A.1d7e57aa55817448.MetadataViews.Royalties"]}/> 
-    <Traits view={storage["A.1d7e57aa55817448.MetadataViews.Traits"]}/> 
+    <NFTCollectionDisplay view={storage["MetadataViews.NFTCollectionDisplay"]}/>
+    <ExternalURL view={storage["MetadataViews.ExternalURL"]}/>
+    <Editions view={storage["MetadataViews.Editions"]}/>
+    <Serial view={storage["MetadataViews.Serial"]}/>
+    <Royalties view={storage["MetadataViews.Royalties"]}/> 
+    <Traits view={storage["MetadataViews.Traits"]}/> 
 
   </Box>
 </Box>
-  <Medias view={storage["A.1d7e57aa55817448.MetadataViews.Medias"]}/> 
+  <Medias view={storage["MetadataViews.Medias"]}/> 
   
   
     </div>
 }
      
-    {!uuid && !hasCustomDisplay && storage && 
+    {uuid==null && !hasCustomDisplay && storage && 
       (domain==="storage" ) &&  
       <CodeEditor key="storage" prefix={domain} type="" index={0} code={storage} lang="json" />
-
     }
     
     </Box>

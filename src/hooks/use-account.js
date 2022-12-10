@@ -78,7 +78,6 @@ export function useAccount(address) {
             else{
               s.append(path)
             }
-            s.append(path)
             return true
           })
           getAuthAccount(addr).forEachPublic(fun (path: PublicPath, type: Type): Bool {
