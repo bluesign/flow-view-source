@@ -62,7 +62,7 @@ export function useAccount(address) {
           var ft : [{String:AnyStruct}] = []
 
           getAuthAccount(addr).forEachStored(fun (path: StoragePath, type: Type): Bool {
-            for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection","LibraryPassCollection"]{
+            for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection","LibraryPassCollection","RaribleNFTCollection"]{
             if path==StoragePath(identifier: banned){
                 return true
             }}

@@ -88,7 +88,6 @@ function NFTCollectionDisplay({view}){
 
 function NFTDisplayText({view}){
   if (!view) return null
-  console.log(view)
   view = view["MetadataViews.Display"]
   return (
     <Card sx={cardBig} raised>
@@ -188,7 +187,6 @@ function Royalties({view}){
 function Editions({view}){
   if (!view) return null
   view = view["MetadataViews.Editions"]
-  console.log(view)
   return (
     <Group title="Edition">
       {view["infoList"] && view["infoList"].map(item=>
@@ -268,7 +266,6 @@ export function Content() {
   const [storage, setStorage] = useState(null)
   const [storageRaw, setStorageRaw] = useState(null)
 
-console.log(uuid)
   useEffect(() => {
     setStorage(null)
     setStorageRaw(null)
@@ -281,7 +278,7 @@ console.log(uuid)
                     var obj = getAuthAccount(address).borrow<auth &AnyResource>(from: StoragePath(identifier: path)!)!
                     var meta = obj as? &AnyResource{MetadataViews.ResolverCollection}
 
-                    if meta!=nil {
+                    if meta!=nil && meta!.getIDs().length>0{
                       var res : {UInt64:AnyStruct} = {}
                       for id in meta!.getIDs(){
                         res[id] = meta!.borrowViewResolver(id:id).resolveView(Type<MetadataViews.Display>())!
@@ -349,7 +346,7 @@ console.log(uuid)
                   pub fun main(address: Address) : [{String:AnyStruct}]{
                     var res :  [{String:AnyStruct}] = []
                     getAuthAccount(address).forEach${domain}(fun (path: ${domain}Path, type: Type): Bool {
-                      for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection"]{
+                      for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection","RaribleNFTCollection"]{
                       if path==${domain}Path(identifier: banned){
                         return true
                       }

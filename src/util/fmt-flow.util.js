@@ -92,7 +92,6 @@ export function cadenceValueToDict(payload, brief){
 
     if (payload["id"]!=null && payload["id"].indexOf("A.")===0){
       
-      console.log(brief, payload)
       res = {}
       for (const f in payload["fields"]){
           res[payload["fields"][f]["name"]] =  cadenceValueToDict(payload["fields"][f]["value"], brief)
