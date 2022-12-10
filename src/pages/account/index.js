@@ -1,6 +1,6 @@
 import {Suspense} from "react"
 import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 
 import {NavLink as Link, useParams} from "react-router-dom"
 
@@ -24,7 +24,6 @@ function storageCapacity(storage) {
 export function AccountSideBar() {
   const {address} = useParams()
 
-  
 
   const network = useNetworkForAddress(address)
   const user = useCurrentUser()
@@ -65,6 +64,21 @@ export function AccountSideBar() {
         <Item as={Link}  to={keysUrl(address)} icon="ghost">  {address} - [{network}] </Item>} >
         </Group>
         
+        {accountStorage && accountStorage?.find && 
+        <Group icon="search" title=".find Profile">
+          <Stack margin={0} spacing={1} direction="row" >
+
+          <Avatar src={accountStorage?.find.avatar} />
+          <div>
+            <Item as={Link} to={{pathname: `https://find.xyz/${accountStorage?.find.name}`}} target="_blank"> {accountStorage?.find.name}.find  </Item>
+            <Item> {accountStorage?.find.description}  </Item>
+            </div>
+
+            </Stack>
+        </Group>
+
+        }
+
         {contracts?.length>0 && 
         <Group icon="code" title={`${contracts?.length} Contracts`} >
           {contracts.map(name => (

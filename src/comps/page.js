@@ -83,7 +83,7 @@ const Search = mstyled('div')(({ theme }) => ({
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="TransactionId / Account Address "
+              placeholder="TransactionId / Account Address / .find Address "
               inputProps={{ 'aria-label': 'search' }}
               fullWidth={true}
               onKeyDown={goSearch}

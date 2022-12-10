@@ -7,6 +7,8 @@ import {GlobalStyles} from "./styles/global"
 import CssBaseline from '@mui/material/CssBaseline';
 
 import Account from "./pages/account"
+import Find from "./pages/account/find"
+
 import AccountContractNew from "./pages/account/contract-new"
 import {TxStatus} from "./pages/tx-status"
 
@@ -77,6 +79,9 @@ ReactDOM.render(
       <GlobalStyles />
       <Router>
         <Switch>
+        <Route exact path="/:name([a-z0-9-]{3,16}.find)" component={Find} />
+
+
           <Route exact path="/:txId([0-9a-fA-F]{64})" component={TxStatus} />
           <Route exact path="/:address([0-9a-fA-F]{8,16})" component={Account} />
           <Route exact path="/:address([0-9a-fA-F]{8,16})/keys" component={Account}/>
@@ -84,7 +89,9 @@ ReactDOM.render(
           <Route exact path="/:address([0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path" component={Account}/>
           <Route exact path="/:address([0-9a-fA-F]{8,16})/contract/new" component={AccountContractNew} />
           <Route exact path="/:address([0-9a-fA-F]{8,16})/:name" component={Account} />
-        
+          
+          
+
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})" component={Account} />
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/keys" component={Account}/>
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/:domain(storage|public|private)/:path/:uuid" component={Account}/>

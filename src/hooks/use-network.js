@@ -37,7 +37,12 @@ export function getNetworkConfig(network){
 }
 
 export function useNetworkForAddress(address){
-  var network = getNetworkFromAddress(address)
+  var network = "testnet"
+  if (address.indexOf(".find")>-1){
+    network="mainnet"  
+  }else{
+  network = getNetworkFromAddress(address)
+  }
   fcl.config(getNetworkConfig(network))
   return network
 }
@@ -52,6 +57,7 @@ export function useNetwork(network) {
     }
     setConfig(getNetworkConfig[network], setValue)
   },[network, value])
+  
   
   return value
 }

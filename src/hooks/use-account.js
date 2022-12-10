@@ -33,6 +33,7 @@ export const fsm = atomFamily({
 })
 
 export function useAccount(address) {
+
   address = withPrefix(address)
   const [$data, setData] = useRecoilState(data(address))
   const [$status, setStatus] = useRecoilState(fsm(address))
@@ -40,6 +41,9 @@ export function useAccount(address) {
  
   useEffect(()=>{
     if (!$data) return 
+
+    
+
     fcl
     .query({
       args: (arg, t) => [arg(address, t.Address)],
@@ -53,8 +57,10 @@ export function useAccount(address) {
         let ret: {String: AnyStruct} = {}
         ret["capacity"] = acct.storageCapacity
         ret["used"] = acct.storageUsed
-        ret["available"] = acct.storageCapacity - acct.storageUsed
-
+        ret["available"]  = 0
+        if acct.storageCapacity>acct.storageUsed{
+          ret["available"] = acct.storageCapacity - acct.storageUsed
+        }
           var s : [Path] = []
           var pu : [Path] = []
           var pr : [Path] = []
@@ -93,6 +99,10 @@ export function useAccount(address) {
         ret["private"] = pr
         ret["nft"] = nft
         ret["ft"] = ft
+
+        //find profile
+        var findProfile = getAuthAccount(addr).borrow<&AnyResource>(from:/storage/findProfile)
+        ret["find"] = findProfile
 
         return ret
       }
