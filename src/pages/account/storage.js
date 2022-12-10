@@ -50,7 +50,7 @@ const cardBig =  {
   margin: 1,
   padding: 1,
   borderRadius: 4,
-  width: 400,
+  width: 350,
   textAlign: 'left',
   backgroundColor: "black",
   border: 1,
