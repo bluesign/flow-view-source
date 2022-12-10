@@ -70,6 +70,7 @@ export function AccountSideBar() {
           {contracts.map(name => (
           <Item icon="scroll-old" key={name}  as={Link} to={contractUrl(address, name)}>
              {name} 
+
           </Item>
           ))}
           {IS_CURRENT_USER && <HR />}

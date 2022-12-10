@@ -5,6 +5,8 @@ import {useParams} from "react-router-dom"
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import SaveIcon from '@mui/icons-material/Save';
+import SearchIcon from '@mui/icons-material/Info';
+
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 
@@ -13,7 +15,7 @@ import {useAccount} from "../../hooks/use-account"
 import CodeEditor from "../../comps/editor"
 import {useTx, IDLE} from "../../hooks/use-tx.hook"
 import {Roll} from "../../comps/text"
-import {withPrefix} from "../../util/address.util"
+import {sansPrefix, withPrefix} from "../../util/address.util"
 
 
 const fabStyle = {
@@ -22,7 +24,8 @@ const fabStyle = {
   right: 30,
 };
 
-const Footer = ({acct, name, code}) => {
+const Footer = ({acct, address, name, code, isCurrentUser}) => {
+
   const [exec, status, txStatus, details] = useTx(
     [
       fcl.transaction`
@@ -44,6 +47,9 @@ const Footer = ({acct, name, code}) => {
     }
   )
  
+  const goBrowser = ()=>{
+    window.open("https://contractbrowser.com/A."+sansPrefix(address)+"."+name)
+  }
   const saveContract = () => {
     // prettier-ignore
     exec([
@@ -61,11 +67,20 @@ const Footer = ({acct, name, code}) => {
       </Snackbar>
     )
 
+    if (isCurrentUser){
   return (
   <Fab sx={fabStyle} color="secondary" onClick={saveContract}>
     <SaveIcon />
   </Fab>
   )
+    }
+    else{
+      return (
+        <Fab sx={fabStyle} color="secondary" onClick={goBrowser}>
+          <SearchIcon />
+        </Fab>
+        )
+    }
 }
 
 export function Content() {
@@ -82,7 +97,7 @@ export function Content() {
 
   return (
     <Box>
-      {IS_CURRENT_USER && <Footer acct={acct} name={name} code={code} />}
+      <Footer acct={acct} address={address} name={name} code={code} isCurrentUser={IS_CURRENT_USER}/>
       <CodeEditor key={name} code={code}  name={name} onChange={IS_CURRENT_USER?setCode:null} lang="cadence" />
     </Box>
   )
