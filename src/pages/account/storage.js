@@ -69,6 +69,13 @@ const media = {
   border: 0,
   borderColor: "gray",
 }
+const mainMedia = {
+  maxWidth:"100%",
+  borderRadius: 2,
+
+  objectFit: "contain",
+}
+
 
 
 function NFTCollectionDisplay({ view }) {
@@ -108,14 +115,11 @@ function NFTDisplayText({ view, children }) {
   view = view["MetadataViews.Display"]
   return (
     <Box>
-       <Card sx={media} raised>
-              <CardMedia
+              <Box
+              component="img"
+              sx={mainMedia}
                 src={parseFile(view["thumbnail"])}
-                component="img"
-                controls
               />
-            </Card>
-            
       <Group title={view["name"].toUpperCase()}>
          <Item><Muted>{view["description"]}</Muted></Item>
        </Group>
