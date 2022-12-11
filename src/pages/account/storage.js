@@ -4,7 +4,7 @@ import * as fcl from "@onflow/fcl"
 import * as t from "@onflow/types"
 import { Suspense, useState, useEffect } from "react"
 import { NavLink as Link, useParams } from "react-router-dom"
-
+import Paper from '@mui/material/Paper';
 import Card from "@mui/material/Card"
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
@@ -50,14 +50,11 @@ const card = {
 
 const cardBig = {
   fontSize: "13px",
-  margin: 1,
   flex: 1,
-  padding: 1,
   borderRadius: 4,
   minWidth: 200,
   textAlign: 'left',
-  backgroundColor: "black",
-  border: 1,
+  border: 0,
   borderColor: "gray",
 }
 
@@ -82,8 +79,6 @@ function NFTCollectionDisplay({ view }) {
       <Item>{view["name"]}</Item>
       <Item><Muted>{view["description"]}</Muted></Item>
     </Group>
-
-
   )
 }
 function NFTDisplay({ id, view }) {
@@ -112,20 +107,21 @@ function NFTDisplayText({ view, children }) {
   if (!view) return null
   view = view["MetadataViews.Display"]
   return (
-    <Card sx={cardBig} raised>
-      <CardMedia
-        src={parseFile(view["thumbnail"])}
-        component="img"
-        sx={{ borderRadius: 2 }}
-      />
-      <CardContent>
-        <Group title={view["name"].toUpperCase()}>
-          <Item><Muted>{view["description"]}</Muted></Item>
-        </Group>
+    <Box>
+       <Card sx={media} raised>
+              <CardMedia
+                src={parseFile(view["thumbnail"])}
+                component="img"
+                controls
+              />
+            </Card>
+            
+      <Group title={view["name"].toUpperCase()}>
+         <Item><Muted>{view["description"]}</Muted></Item>
+       </Group>
+        
         {children}
-      </CardContent>
-    </Card>
-
+      </Box>
 
   )
 }
@@ -185,7 +181,6 @@ function Medias({ view }) {
                 component={mime}
                 controls
               />
-              {parseFile(item)}
             </Card>
           )
         }
@@ -208,7 +203,6 @@ function Royalties({ view }) {
           <Item>{item["MetadataViews.Royalty"]["description"]}</Item>
           <Item>&nbsp;Address:&nbsp; <Muted>  {item["MetadataViews.Royalty"]["receiver"]["<Capability>"]["address"]} </Muted></Item>
           <Item>&nbsp;Cut:&nbsp; <Muted>  {item["MetadataViews.Royalty"]["cut"]} </Muted></Item>
-
         </div>
       )
       }
@@ -439,8 +433,9 @@ export function Content() {
       }
       {uuid != null &&
         <div>
-          <Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"} >
+          <Box margin={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"} >
 
+          <Box sx={cardBig} raised>
             <NFTDisplayText view={storage["MetadataViews.Display"]}>
               <ExternalURL view={storage["MetadataViews.ExternalURL"]} />
               <Editions view={storage["MetadataViews.Editions"]} />
@@ -448,19 +443,15 @@ export function Content() {
               <Traits view={storage["MetadataViews.Traits"]} />
 
             </NFTDisplayText>
+          </Box>
+            <Box sx={cardBig} margin={3} raised>
 
-            <Card sx={cardBig} raised>
-
-              <CardContent>
                 <NFTCollectionDisplay view={storage["MetadataViews.NFTCollectionDisplay"]} />
                 <br />
                 <Royalties view={storage["MetadataViews.Royalties"]} />
                 <br />
-
                 <Medias view={storage["MetadataViews.Medias"]} />
-              </CardContent>
-            </Card>
-
+            </Box>
           </Box>
         </div>
       }
