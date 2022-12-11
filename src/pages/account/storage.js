@@ -45,18 +45,7 @@ const card =  {
   borderColor: "gray",
 }
 
-const cardCollection =  {
 
-  margin: 1,
-  flex: 1,
-  padding: 2,
-  borderRadius: 4,
-  minWidth: '70vw',
-  textAlign: 'left',
-  backgroundColor: "black",
-  border: 1,
-  borderColor: "gray",
-}
 
 const cardBig =  {
   fontSize: "13px",
@@ -88,7 +77,7 @@ function NFTCollectionDisplay({view}){
   if (!view) return null
   view = view["MetadataViews.NFTCollectionDisplay"]
   return (
-    <Group title="Collection Information">
+    <Group icon="info" title="Collection Information">
       <Item>{view["name"]}</Item>
       <Item><Muted>{view["description"]}</Muted></Item>
     </Group>
@@ -118,10 +107,12 @@ function NFTDisplayText({view, children}){
     <CardMedia 
         src = {parseFile(view["thumbnail"])}
         component = "img"
+        sx={{borderRadius: 2}}
     />
     <CardContent>
-    <Group title={view["name"]}/>
+    <Group title={view["name"].toUpperCase()}>
       <Item><Muted>{view["description"]}</Muted></Item>
+      </Group>
       {children}
     </CardContent>
   </Card>
@@ -165,7 +156,7 @@ function Medias({view}){
 
   return (
 
-    <Group title="Medias">
+    <Group icon="photo-film" title="Medias">
 
       <Item>{view["name"]}</Item>
       <Item><Muted>{view["description"]}</Muted></Item>
@@ -205,11 +196,16 @@ function Medias({view}){
 function Royalties({view}){
   if (!view) return null
   view = view["MetadataViews.Royalties"]
-
+  if (view["cutInfos"].length===0) return null
   return (
-    <Group title="Royalties">
+    <Group icon="coins" title="Royalties">
       {view["cutInfos"] && view["cutInfos"].map(item=>
-      <Item>{item["MetadataViews.Royalty"]["description"]}:&nbsp; <Muted> {item["MetadataViews.Royalty"]["receiver"]["<Capability>"]["address"]} {item["MetadataViews.Royalty"]["cut"]}  </Muted></Item>
+      <div>
+      <Item>{item["MetadataViews.Royalty"]["description"]}</Item>
+      <Item>&nbsp;Address:&nbsp; <Muted>  {item["MetadataViews.Royalty"]["receiver"]["<Capability>"]["address"]} </Muted></Item>
+      <Item>&nbsp;Cut:&nbsp; <Muted>  {item["MetadataViews.Royalty"]["cut"]} </Muted></Item>
+      
+      </div>
       )
       }
     </Group>
@@ -220,10 +216,12 @@ function Editions({view}){
   if (!view) return null
   view = view["MetadataViews.Editions"]
   return (
-    <Group title="Edition">
+    <Group icon="registered" title="Edition">
       {view["infoList"] && view["infoList"].map(item=>
       <div>
-      <Item>{item["MetadataViews.Edition"]["name"]} &nbsp; <Muted>{item["MetadataViews.Edition"]["number"]} / {item["MetadataViews.Edition"]["max"]}</Muted></Item>
+      {item["MetadataViews.Edition"]["name"] && <Item>Name:&nbsp; <Muted>{item["MetadataViews.Edition"]["name"]}</Muted></Item>}
+      {item["MetadataViews.Edition"]["number"] && <Item>Number:&nbsp; <Muted>{item["MetadataViews.Edition"]["number"]}</Muted></Item>}
+      {item["MetadataViews.Edition"]["max"] && <Item>Max:&nbsp; <Muted>{item["MetadataViews.Edition"]["max"]}</Muted></Item>}
       </div>)
       }
     </Group>
@@ -237,9 +235,13 @@ function ExternalURL({view}){
   view = view["MetadataViews.ExternalURL"]
 
   return (
-    <Group title="External URL">
+    <Group icon="link" title="External URL">
       {
-      <Item>URL:&nbsp; <Muted>{view["url"]}</Muted></Item>
+      <Item as={Link} to={{pathname: view["url"]}} target="_blank">
+      {view["url"]}
+      </Item>
+
+      
       }
     </Group>
   )
@@ -250,7 +252,7 @@ function Serial({view}){
   view = view["MetadataViews.Serial"]
 
   return (
-    <Group title="Serial #">
+    <Group icon="hashtag" title="Serial">
       <Item>Number:&nbsp; <Muted>{view["number"]}</Muted></Item>
     </Group>
   )
@@ -261,7 +263,7 @@ function Traits({view}){
   view = view["MetadataViews.Traits"]
   if (view["traits"].length===0) return null
   return (
-    <Group title="Traits">
+    <Group icon="bars" title="Traits">
     {view["traits"] && view["traits"].map(trait=>   
       <Item>{trait["MetadataViews.Trait"]["name"]}:&nbsp;<Muted>{trait["MetadataViews.Trait"]["value"]}</Muted> </Item>)}
 </Group>
@@ -348,8 +350,10 @@ export function Content() {
   
                         var res : {String:AnyStruct} = {}
                         
-                        var vr = meta!.borrowViewResolver(id:uuid)
-                        for mdtype in vr.getViews(){
+                        var vr = meta?.borrowViewResolver(id:uuid)
+                        if let  views = vr?.getViews(){
+
+                        for mdtype in views{
 
                           if mdtype==Type<MetadataViews.NFTView>() {
                             continue
@@ -358,8 +362,9 @@ export function Content() {
                             continue
                           }
 
-                          res[mdtype.identifier]=vr.resolveView(mdtype)
+                          res[mdtype.identifier]=vr?.resolveView(mdtype)
                         }
+                      }
   
                         return res
                     }
@@ -468,7 +473,6 @@ export function Content() {
     <ExternalURL view={storage["MetadataViews.ExternalURL"]}/>
     <Editions view={storage["MetadataViews.Editions"]}/>
     <Serial view={storage["MetadataViews.Serial"]}/>
-    <Royalties view={storage["MetadataViews.Royalties"]}/>    
     <Traits view={storage["MetadataViews.Traits"]}/> 
  
 </NFTDisplayText>
@@ -478,6 +482,9 @@ export function Content() {
     <CardContent>
 <NFTCollectionDisplay view={storage["MetadataViews.NFTCollectionDisplay"]}/>
 <br/>
+<Royalties view={storage["MetadataViews.Royalties"]}/>    
+<br/>
+
  <Medias view={storage["MetadataViews.Medias"]}/> 
   </CardContent>
   </Card>

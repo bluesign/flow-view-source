@@ -14,7 +14,7 @@ export const HR = styled.hr`
   margin: 8px 55px 8px 0;
 `
 
-const GroupStyle = styled.div`
+const GroupStyle = styled.div`  
  display: 'flex-inline'
   & + & {
     margin-top: 21px;
@@ -23,7 +23,9 @@ const GroupStyle = styled.div`
 
 const GroupBody = styled.div`
   position: relative;
-`
+  color: #ababab
+
+  `
 
 const GroupTitle = styled.div`
   font-weight: bold;
