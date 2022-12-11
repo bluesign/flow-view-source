@@ -45,12 +45,26 @@ const card =  {
   borderColor: "gray",
 }
 
+const cardCollection =  {
+
+  margin: 1,
+  flex: 1,
+  padding: 2,
+  borderRadius: 4,
+  minWidth: '70vw',
+  textAlign: 'left',
+  backgroundColor: "black",
+  border: 1,
+  borderColor: "gray",
+}
+
 const cardBig =  {
   fontSize: "13px",
   margin: 1,
+  flex: 1,
   padding: 1,
   borderRadius: 4,
-  width: 350,
+  minWidth: 200,
   textAlign: 'left',
   backgroundColor: "black",
   border: 1,
@@ -65,7 +79,7 @@ const media =  {
   width: 200,
   textAlign: 'left',
   backgroundColor: "black",
-  border: 1,
+  border: 0,
   borderColor: "gray",
 }
 
@@ -74,19 +88,29 @@ function NFTCollectionDisplay({view}){
   if (!view) return null
   view = view["MetadataViews.NFTCollectionDisplay"]
   return (
+    <Group title="Collection Information">
+      <Item>{view["name"]}</Item>
+      <Item><Muted>{view["description"]}</Muted></Item>
+    </Group>
+  
+   
+  )
+  /*
+  return (
     <Box width={600}>
     <Group title="Collection Information">
       <Item>{view["name"]}</Item>
+      
       <Item><Muted>{view["description"]}</Muted></Item>
       <Item>URL:&nbsp; <Muted>{view["externalURL"]["MetadataViews.ExternalURL"]["url"]}</Muted></Item>
       <Item>Banner Image:&nbsp; <Muted>{parseFile(view["bannerImage"])}</Muted></Item>
       <Item>Square Image:&nbsp; <Muted>{parseFile(view["squareImage"])}</Muted></Item>
     </Group>
     </Box>
-  )
+  )*/
 }
 
-function NFTDisplayText({view}){
+function NFTDisplayText({view, children}){
   if (!view) return null
   view = view["MetadataViews.Display"]
   return (
@@ -96,8 +120,9 @@ function NFTDisplayText({view}){
         component = "img"
     />
     <CardContent>
-      <Item>{view["name"]}</Item>
+    <Group title={view["name"]}/>
       <Item><Muted>{view["description"]}</Muted></Item>
+      {children}
     </CardContent>
   </Card>
 
@@ -139,8 +164,13 @@ function Medias({view}){
   view = view["MetadataViews.Medias"]
 
   return (
+
     <Group title="Medias">
-      <Box padding={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
+
+      <Item>{view["name"]}</Item>
+      <Item><Muted>{view["description"]}</Muted></Item>
+
+       <Box padding={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"} minWidth={200}> 
 
     
       {view["items"].map(item=>
@@ -166,7 +196,9 @@ function Medias({view}){
       
     )}
     </Box>
-    </Group>
+  </Group>
+
+     
   )
 }
 
@@ -227,13 +259,15 @@ function Serial({view}){
 function Traits({view}){
   if (!view) return null
   view = view["MetadataViews.Traits"]
-
+  if (view["traits"].length===0) return null
   return (
     <Group title="Traits">
     {view["traits"] && view["traits"].map(trait=>   
       <Item>{trait["MetadataViews.Trait"]["name"]}:&nbsp;<Muted>{trait["MetadataViews.Trait"]["value"]}</Muted> </Item>)}
-    </Group>
+</Group>
+   
   )
+
 }
 
 
@@ -324,7 +358,7 @@ export function Content() {
                             continue
                           }
 
-                          res[mdtype.identifier]=vr.resolveView(mdtype)!
+                          res[mdtype.identifier]=vr.resolveView(mdtype)
                         }
   
                         return res
@@ -428,21 +462,27 @@ export function Content() {
     }
 {uuid!=null &&
 <div>
-<Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}> 
-<NFTDisplayText view={storage["MetadataViews.Display"]}/> 
-  <Box marginLeft={1} display={"flex"} flexDirection={"column"} flexWrap={"wrap"}> 
-    <NFTCollectionDisplay view={storage["MetadataViews.NFTCollectionDisplay"]}/>
+<Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"} > 
+
+<NFTDisplayText view={storage["MetadataViews.Display"]}>
     <ExternalURL view={storage["MetadataViews.ExternalURL"]}/>
     <Editions view={storage["MetadataViews.Editions"]}/>
     <Serial view={storage["MetadataViews.Serial"]}/>
-    <Royalties view={storage["MetadataViews.Royalties"]}/> 
+    <Royalties view={storage["MetadataViews.Royalties"]}/>    
     <Traits view={storage["MetadataViews.Traits"]}/> 
+ 
+</NFTDisplayText>
 
+<Card sx={cardBig} raised>
+    
+    <CardContent>
+<NFTCollectionDisplay view={storage["MetadataViews.NFTCollectionDisplay"]}/>
+<br/>
+ <Medias view={storage["MetadataViews.Medias"]}/> 
+  </CardContent>
+  </Card>
+  
   </Box>
-</Box>
-  <Medias view={storage["MetadataViews.Medias"]}/> 
-  
-  
     </div>
 }
      
