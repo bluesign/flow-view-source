@@ -110,7 +110,7 @@ export function AccountSideBar() {
       >
 
       {accountStorage?.nft.length>0 &&
-      <Group icon="box-heart" title={`NFT Collections`} >
+      <Group icon="photo-film" title={`NFT Collections`} >
         {accountStorage && accountStorage?.nft.map(collection => (
           <Item icon="folder" key={collection.path.domain+"/"+collection.path.identifier}  as={Link} to={storageUrl(address, collection.path.domain, collection.path.identifier)}>
             {collection.path.identifier}({collection.count})
