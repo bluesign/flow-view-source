@@ -77,7 +77,7 @@ function NFTCollectionDisplay({view}){
   if (!view) return null
   view = view["MetadataViews.NFTCollectionDisplay"]
   return (
-    <Group icon="info" title="Collection Information">
+    <Group icon="circle-info" title="Collection Information">
       <Item>{view["name"]}</Item>
       <Item><Muted>{view["description"]}</Muted></Item>
     </Group>
