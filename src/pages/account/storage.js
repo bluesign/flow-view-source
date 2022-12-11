@@ -220,8 +220,8 @@ function Editions({view}){
       {view["infoList"] && view["infoList"].map(item=>
       <div>
       {item["MetadataViews.Edition"]["name"] && <Item>Name:&nbsp; <Muted>{item["MetadataViews.Edition"]["name"]}</Muted></Item>}
-      {item["MetadataViews.Edition"]["number"] && <Item>Number:&nbsp; <Muted>{item["MetadataViews.Edition"]["number"]}</Muted></Item>}
-      {item["MetadataViews.Edition"]["max"] && <Item>Max:&nbsp; <Muted>{item["MetadataViews.Edition"]["max"]}</Muted></Item>}
+      {item["MetadataViews.Edition"]["number"]!=null && <Item>Number:&nbsp; <Muted>{item["MetadataViews.Edition"]["number"]}</Muted></Item>}
+      {item["MetadataViews.Edition"]["max"]!=null && <Item>Max:&nbsp; <Muted>{item["MetadataViews.Edition"]["max"]}</Muted></Item>}
       </div>)
       }
     </Group>
