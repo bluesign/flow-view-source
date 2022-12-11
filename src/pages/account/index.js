@@ -108,7 +108,7 @@ export function AccountSideBar() {
         ))}
       </Group
       >
-
+ 
       {accountStorage?.nft.length>0 &&
       <Group icon="photo-film" title={`NFT Collections`} >
         {accountStorage && accountStorage?.nft.map(collection => (
