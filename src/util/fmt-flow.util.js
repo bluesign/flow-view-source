@@ -25,9 +25,9 @@ export function cadenceValueToDict(payload, brief){
       var resDict = {}
       payload["value"].forEach(element => {
       
-      var skey = cadenceValueToDict(element["key"], brief)
-          
-        if (brief && skey ){
+					var skey = cadenceValueToDict(element["key"], brief)
+						
+					if (brief && skey ){
           if (skey.toString().indexOf("A.")===0){
             skey = skey.toString().split(".").slice(2).join(".")
           }
@@ -72,8 +72,12 @@ export function cadenceValueToDict(payload, brief){
       return payload["value"]["domain"]+"/"+payload["value"]["identifier"]
     }
 
+	  if (payload["type"]==="UInt64") { 
+				return BigInt(payload["value"])
+		}
+
     if (payload["type"] && payload["type"].indexOf("Int")>-1){
-      return parseInt(payload["value"])
+				return parseInt(payload["value"])
     }
   
     if (Array.isArray(payload)){
