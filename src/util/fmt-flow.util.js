@@ -73,9 +73,9 @@ export function cadenceValueToDict(payload, brief){
       return payload["value"]["domain"]+"/"+payload["value"]["identifier"]
     }
 
-	  if (payload["type"]==="UInt64") { 
-				return BigInt(payload["value"])
-		}
+	if (payload["type"]==="UInt64") { 
+				return payload["value"]
+	}
 
     if (payload["type"] && payload["type"].indexOf("Int")>-1){
 				return parseInt(payload["value"])
