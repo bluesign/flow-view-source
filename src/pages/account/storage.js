@@ -260,8 +260,14 @@ function Traits({ view }) {
   if (view["traits"].length === 0) return null
   return (
     <Group icon="bars" title="Traits">
-      {view["traits"] && view["traits"].map(trait =>
-        <Item>{trait["MetadataViews.Trait"]["name"]}:&nbsp;<Muted>{trait["MetadataViews.Trait"]["value"]}</Muted> </Item>)}
+      {view["traits"] && view["traits"].map(trait =>{
+        const value = trait["MetadataViews.Trait"]["value"].toString()
+        const name = trait["MetadataViews.Trait"]["name"]
+
+        return(
+          <Item>{name}:&nbsp;<Muted title={value}>{value}</Muted> </Item>)}
+        )
+      }
     </Group>
 
   )
