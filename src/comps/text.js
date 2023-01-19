@@ -38,6 +38,7 @@ export const Muted = styled.span`
   color: var(--mute);
   display: inline;
   vertical-align: top;
+  word-break: break-all;
 `
 
 export const Good = styled.span`
