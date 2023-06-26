@@ -79,7 +79,6 @@ export function AccountSideBar() {
 
         }
 
-        {contracts?.length>0 && 
         <Group icon="code" title={`${contracts?.length} Contracts`} >
           {contracts.map(name => (
           <Item icon="scroll-old" key={name}  as={Link} to={contractUrl(address, name)}>
@@ -93,7 +92,7 @@ export function AccountSideBar() {
               New Contract
             </Item>
           )}
-          </Group>}
+          </Group>
 
 
           
