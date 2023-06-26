@@ -31,8 +31,12 @@ const Footer = ({acct, address, name, code, isCurrentUser}) => {
       fcl.transaction`
       transaction(name: String, code: String) {
         prepare(acct: AuthAccount) {
-          acct.contracts.update__experimental(name: name, code: code.decodeHex())
-        }
+          if acct.contracts.get(name: name)==nil{
+            acct.contracts.add(name: name, code: code.decodeHex())
+            }else{
+              acct.contracts.update__experimental(name: name, code: code.decodeHex())
+            }
+          }
       }
     `,
       fcl.payer(fcl.authz),
