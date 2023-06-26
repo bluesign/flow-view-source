@@ -17,6 +17,7 @@ import {useTx, IDLE} from "../../hooks/use-tx.hook"
 import {Roll} from "../../comps/text"
 import {sansPrefix, withPrefix} from "../../util/address.util"
 
+import {extractContractName} from "@onflow/flow-cadut"
 
 const fabStyle = {
   position: 'absolute',
@@ -32,7 +33,7 @@ const Footer = ({acct, address, name, code, isCurrentUser}) => {
       transaction(name: String, code: String) {
         prepare(acct: AuthAccount) {
           if acct.contracts.get(name: name)==nil{
-            acct.contracts.add(name: name, code: code.decodeHex())
+              acct.contracts.add(name: name, code: code.decodeHex())
             }else{
               acct.contracts.update__experimental(name: name, code: code.decodeHex())
             }
@@ -46,7 +47,7 @@ const Footer = ({acct, address, name, code, isCurrentUser}) => {
     ],
     {
       async onSuccess() {
-        await acct.refetch()
+        window.location.reload()
       },
     }
   )
@@ -57,7 +58,7 @@ const Footer = ({acct, address, name, code, isCurrentUser}) => {
   const saveContract = () => {
     // prettier-ignore
     exec([
-      fcl.arg(name, t.String),
+      fcl.arg(extractContractName(code), t.String),
       fcl.arg(Buffer.from(code, "utf8").toString("hex"), t.String)
     ])
   }
