@@ -24,13 +24,14 @@ const GroupStyle = styled.div`
 const GroupBody = styled.div`
   position: relative;
   color: #ababab
-
+  
   `
 
 const GroupTitle = styled.div`
   font-weight: bold;
   margin-right: 34px;
   font-size: 14px;
+  margin-top: 6px;
   line-height: 34px;
   display: block;
   & + ${GroupBody} {
@@ -73,11 +74,11 @@ const GroupTitle = styled.div`
 
 const ItemRoot = styled.div`
   font-size: 14px;
-  line-height: 16px;
+  line-height: 21px;
   margin-right: 0px;
   background: none;
   border: none;
-  padding: 1px;
+  padding: 0px;
   display: block;
 
   font-family: var(--font-family);
