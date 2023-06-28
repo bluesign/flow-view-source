@@ -119,7 +119,7 @@ export default function Component({sideContent, children, ...rest})  {
           <Box p={0} sx={{ display: 'flex' }}>
               {open && sideContent}
 
-            <Box component="main" sx={{ marginTop:"15px", marginLeft:"310px", flexGrow: 1, p: 0 }}>
+            <Box component="main" sx={{ marginTop:"15px", marginLeft:((open && sideContent) ? "310px":"10px"), flexGrow: 1, p: 0 }}>
               {children}
           </Box>
         </Box>
