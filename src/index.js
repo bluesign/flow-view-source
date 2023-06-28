@@ -1,9 +1,8 @@
-import React from "react"
+import React, {useEffect} from "react"
 import ReactDOM from "react-dom"
 import * as fcl from "@onflow/fcl"
 import {RecoilRoot} from "recoil"
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
-import {GlobalStyles} from "./styles/global"
 import CssBaseline from '@mui/material/CssBaseline';
 
 import Account from "./pages/account"
@@ -15,13 +14,16 @@ import {TxStatus} from "./pages/tx-status"
 import Page from "./comps/page"
 import Box from"@mui/material/Box"
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {ThemeProvider, createTheme, alpha} from "@mui/material/styles"
 import { getNetworkConfig } from "./hooks/use-network"
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+
+import WebFont from 'webfontloader';
+import {createGlobalStyle} from "styled-components"
 
 
 const darkTheme = createTheme({
@@ -38,13 +40,51 @@ const darkTheme = createTheme({
     mode: 'dark',
   },
   typography: {
-    fontFamily: "MonoLisa, JetBrains Mono, Fira Code, monospace",
+    fontFamily: "Inter, MonoLisa, JetBrains Mono, Fira Code, monospace",
     button: {
       textTransform: 'none'
     },     
     }
 });
 
+
+
+export const GlobalStyles = createGlobalStyle`
+  :root {
+    --bg: #1f1f1f;
+    --fg: #ababab;
+    --mute: #787878;
+    --wow: #ff00cc;
+    --alt: #cc00ff;
+    --bad: tomato;
+    --good: lime;
+    --hi: rgba(66, 0, 255, 0.25);
+    --subtle: rgba(255, 255, 255, 0.1);
+    --font-family: "Inter", "MonoLisa", "JetBrains Mono", "Fira Code", monospace;
+  }
+  ::selection {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  html, body {
+    border:0;
+    margin:0;
+    font-family: var(--font-family);
+    background: var(--bg);
+    color: var(--fg);
+  }
+
+  progress {
+    -webkit-appearance: none;
+    background: var(--fg);
+    color: blue;
+  }
+
+  label > input {
+    margin-right: 0.75em;
+  }
+`
 
 
 window.fcl = fcl
@@ -62,11 +102,15 @@ window.xform = (value, from, to) => {
 export function NoMatch() {
   fcl.config(getNetworkConfig("mainnet"))
   return(
-   <Box margin={2} sx={{ width: '100%', typography: 'body1' }}>
      <Page />
-   </Box>
    )
  }
+
+  WebFont.load({
+    google: {
+      families: ['Inter']
+    }
+  });
 
  
 

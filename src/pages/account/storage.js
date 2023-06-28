@@ -22,7 +22,7 @@ import { Muted } from "../../comps/text"
 
 const style = {
   heading: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     letterSpacing: '0.5px',
     marginTop: 1,

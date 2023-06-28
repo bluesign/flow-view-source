@@ -53,7 +53,7 @@ export const Pre = styled.pre`
   padding: 5px;
   margin-left: 5px;
   position: relative;
-  font-size: 0.8em;
+  font-size: 0.9em;
   &::after {
     display: block;
     content: "";

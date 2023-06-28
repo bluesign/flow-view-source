@@ -57,7 +57,7 @@ export function AccountSideBar() {
 
 
   return (
-    <Stack margin={1} spacing={3} borderRight={1} >
+    <Stack className={"sidebar"} padding={1} margin={1} spacing={3} borderRight={1} sx={{height:"100vh", minWidth:"300px", width:"300px", overflowY:"scroll", scrollbarWidth:"0", position:"fixed" }} >
       
      
         <Group title={
@@ -158,7 +158,7 @@ export default function WrappedContent() {
     <Suspense fallback={<Page>Loading...</Page>}>
 
     <Page sideContent={<AccountSideBar/>}>
-      {content}
+        {content}
     </Page>
     
     </Suspense>

@@ -32,7 +32,8 @@
     "recoil": "0.3.1",
     "s-ago": "^2.2.0",
     "styled-components": "^5.3.0",
-    "swr": "^0.5.6"
+    "swr": "^0.5.6",
+    "webfontloader": "^1.6.28"
   },
   "scripts": {
     "start": "react-scripts start",

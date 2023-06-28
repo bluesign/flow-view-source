@@ -70,7 +70,7 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
           language={lang} 
           style={vs2015}
           customStyle={{
-            fontSize:"13px", 
+            fontSize:"14px",
             margin:0,
             padding:0,
             fontFamily: "MonoLisa,JetBrains Mono,Fira Code,monospace",

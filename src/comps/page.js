@@ -24,6 +24,7 @@ const Main = styled.div`
   flex-direction: column;
   max-height: 100%;
   max-width: 100%;
+
 `
 
 const Search = mstyled('div')(({ theme }) => ({
@@ -114,10 +115,12 @@ export default function Component({sideContent, children, ...rest})  {
         <Main>
         <Toolbar/>
         <AppBarWithSearch toggleDrawer={toggleDrawer}/>
-        <Box p={1} sx={{ display: 'flex' }}>
-          {open && sideContent}
-          <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
-            {children}
+
+          <Box p={0} sx={{ display: 'flex' }}>
+              {open && sideContent}
+
+            <Box component="main" sx={{ marginTop:"15px", marginLeft:"310px", flexGrow: 1, p: 0 }}>
+              {children}
           </Box>
         </Box>
         </Main>

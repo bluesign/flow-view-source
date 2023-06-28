@@ -30,7 +30,7 @@ const GroupBody = styled.div`
 const GroupTitle = styled.div`
   font-weight: bold;
   margin-right: 34px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 34px;
   display: block;
   & + ${GroupBody} {
@@ -72,15 +72,16 @@ const GroupTitle = styled.div`
 
 
 const ItemRoot = styled.div`
-  font-size: 13px;
+  font-size: 14px;
   line-height: 16px;
   margin-right: 0px;
   background: none;
   border: none;
-  padding: 0px;
+  padding: 1px;
   display: block;
 
   font-family: var(--font-family);
+  
   & > span {
     white-space: wrap;
     display: flex;
@@ -141,7 +142,7 @@ export const Button = styled.button`
   background: var(--wow);
   color: var(--bg);
   font-family: var(--font-family);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 34px;
   box-sizing: border-box;
   border: 3px solid var(--wow);
@@ -196,7 +197,7 @@ export const Button = styled.button`
 
 export const Input = styled.input`
   line-height: 34px;
-  padding: 0 13px;
+  padding: 0 14px;
   border: 3px solid var(--mute);
   border-radius: 3px;
   font-family: var(--font-family);
