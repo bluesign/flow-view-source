@@ -44,8 +44,8 @@ export function AccountSideBar() {
   })
 
   accountStorage?.ft.sort((a, b) => {
-    if(parseFloat(a.count) < parseFloat(b.count)) return 1;
-    if(parseFloat(a.count) > parseFloat(b.count)) return -1;
+    if(parseFloat(a.balance) < parseFloat(b.balance)) return 1;
+    if(parseFloat(a.balance) > parseFloat(b.balance)) return -1;
     return 0;
   })
 
@@ -57,7 +57,7 @@ export function AccountSideBar() {
 
 
   return (
-    <Stack className={"sidebar"} padding={1} margin={1} spacing={3} borderRight={1} sx={{height:"100vh", minWidth:"300px", width:"300px", overflowY:"scroll", scrollbarWidth:"0", position:"fixed" }} >
+    <Stack className={"sidebar"} paddin={1} margin={1} spacing={3} borderRight={1} sx={{height:"100vh", minWidth:"300px", width:"300px", overflowY:"scroll", scrollbarWidth:"0", position:"fixed" , paddingTop:"85px", top:"-15px"}} >
       
      
         <Group title={
@@ -79,29 +79,31 @@ export function AccountSideBar() {
 
         }
 
-        <Group icon="code" title={`${contracts?.length} Contracts`} >
+      { (IS_CURRENT_USER || contracts?.length > 0) &&
+        <Group icon="code" title={`${contracts?.length} Contracts`}>
           {contracts.map(name => (
-          <Item icon="scroll-old" key={name}  as={Link} to={contractUrl(address, name)}>
-             {name} 
+            <Item icon="scroll-old" key={name} as={Link} to={contractUrl(address, name)}>
+              {name}
 
-          </Item>
+            </Item>
           ))}
           {IS_CURRENT_USER && <HR />}
           {IS_CURRENT_USER && (
-            <Item icon="plus" as={Link} to={contractUrl(address, "new")} >
+            <Item icon="plus" as={Link} to={contractUrl(address, "new")}>
               New Contract
             </Item>
           )}
-          </Group>
+        </Group>
+      }
 
 
-          
-        
+
+
 
         <Group icon="warehouse" title={`FT Vaults`} >
         {accountStorage && accountStorage?.ft.sort(function compareFn(a, b) { return a.balance < b.balance}).map(vault => (
             <Item icon="coins" key={vault.path.domain+"/"+vault.path.identifier} as={Link} to={storageUrl(address, vault.path.domain, vault.path.identifier)}>
-            {vault.path.identifier}({vault.balance})
+            {vault.path.identifier} - {(Math.round(vault.balance * 100) / 100).toFixed(2)}
             </Item>
         
         ))}
