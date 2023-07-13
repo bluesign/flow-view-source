@@ -1,8 +1,11 @@
 import {useParams} from "react-router-dom"
-import {Bad} from "../../comps/text"
+import {Bad, Muted} from "../../comps/text"
 import {useAccount} from "../../hooks/use-account"
-import {Group, Item} from "../../comps/base"
+import {Group, Icon, Item} from "../../comps/base"
 import Box from '@mui/material/Box';
+import Typography from "@mui/material/Typography"
+import * as React from "react"
+import Card from "@mui/material/Card"
 
 const fmtCurve = i =>
   ({
@@ -24,19 +27,42 @@ export function Keys() {
 
   return (
       <Box sx={{marginLeft: 1, padding: "5px"}}>
+        <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
+          <b>Account Keys</b>
+        </Typography>
+
         {(keys || []).map(key => (
-          <Group title={key.publicKey} icon="key" key={key.index}>
-            {key.revoked && (
-              <Item icon="folder-times">
-                <Bad>REVOKED</Bad>
-              </Item>
-            )}
-            <Item icon="hashtag">KeyId: {key.index}</Item>
-            <Item icon="weight-hanging">Weight: {key.weight}/1000</Item>
-            <Item icon="wave-sine">Curve: {fmtCurve(key.signAlgo)}</Item>
-            <Item icon="blender">Hash: {fmtHash(key.hashAlgo)}</Item>
-            <Item icon="dna">Sequence Number: {key.sequenceNumber}</Item>
-          </Group>
+
+          <Box key={`key_${key.index}`} sx={{marginTop:2}}>
+            <Typography component="p" variant="body2" color="text.secondary">
+              <Icon icon="solid fa-key"/>{key.publicKey}
+              {key.revoked && (
+                <Typography component="span" variant="body2" color="red"> REVOKED</Typography>
+              )}
+            </Typography>
+
+            <Typography component="p" variant="body2" color="text.secondary">
+              <Icon icon="solid fa-hashtag"/>KeyId: {key.index}
+            </Typography>
+
+            <Typography component="p" variant="body2" color="text.secondary">
+             <Icon icon="solid fa-weight-hanging"/>Weight:{key.weight}/1000
+            </Typography>
+
+            <Typography component="p" variant="body2" color="text.secondary">
+              <Icon icon="solid fa-water"/>Curve: {fmtCurve(key.signAlgo)}
+            </Typography>
+
+            <Typography component="p" variant="body2"  color="text.secondary">
+              <Icon icon="solid fa-blender"/>Hash: {fmtHash(key.hashAlgo)}
+            </Typography>
+
+            <Typography component="p" variant="body2" color="text.secondary">
+              <Icon icon="solid fa-dna"/>Sequence Number: {key.sequenceNumber}
+            </Typography>
+
+          </Box>
+
         ))}
       </Box>
   )

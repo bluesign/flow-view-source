@@ -17,12 +17,25 @@ import {Suspense} from "react"
 import { getNetworkConfig } from "../hooks/use-network"
 import CodeEditor from "../comps/editor"
 import Page from '../comps/page'
-import {Group, AccountAddress, Item} from "../comps/base"
+import {Group, AccountAddress, Item, Scroll} from "../comps/base"
 
 import {H5, Muted, Pre} from "../comps/text"
 import {cadenceValueToDict, fmtTransactionStatus} from "../util/fmt-flow.util"
 
 import dateFormat from "dateformat";
+import Card from "@mui/material/Card"
+import Typography from "@mui/material/Typography"
+import {
+  AppBlocking,
+  BlockOutlined,
+  CountertopsSharp,
+  Fingerprint, HeightOutlined, KeyboardOptionKey,
+  LinkedIn,
+  LinkSharp,
+  LockClock,
+  PunchClock,
+  TimelapseSharp,
+} from "@mui/icons-material"
 
 
 var ago = require('s-ago');
@@ -97,77 +110,106 @@ export function TxStatus() {
 
   
 
-
-
 return (
   <Suspense fallback={<H5><span>Fetching info for: </span><Muted>{txId}</Muted></H5>} >
-      <Page >
+      <Page>
 
-<Box spacing={3} margin={1} sx={{ width: '100%', typography: 'body1' }}>
+<Box
+    sx={{
+      display: 'flex',
+      p: 1,
+      flexDirection: "column",
+    }}
+  >
 
+    <Typography component="div" variant="h6">
+      Transaction  <Chip
+      color="success"
+      sx={{ display: 'flex-inline' }}
+      label={network}
+      size="small"
+      variant="outlined"
+      key="network"
+    />
+    </Typography>
 
-<Box direction="row" spacing={2}  sx={{ display: 'flex',  flexWrap: 'wrap' }}
->
+    <Typography color="text.secondary"  variant="h7">
+      <Fingerprint fontSize="small"/> {txId} &nbsp;
+      <Chip
+        color={txStatus.status<4?"info":"success"}
+        sx={{width: 100, fontWeight:700, fontSize: "0.8em", display: 'flex-inline' }}
+        label={`${fmtTransactionStatus(txStatus.status)}`}
+        size="small"
+        variant="outlined"
+        key="status"
+      />
 
-<Group title="Transaction" exact >
+      {txStatus.errorMessage!="" && <Chip
+        color={txStatus.errorMessage===""?"success":"error"}
+        sx={{width: 100, fontWeight:700, fontSize: "0.9em", display: 'flex-inline' }}
+        label={txStatus.errorMessage===""?"SUCCESS":"ERROR"}
+        size="small"
+        variant="outlined"
+        key="result"
+      />}
 
-<Item icon="fingerprint"> {txId} </Item>
-<Item icon="link">{network}</Item> 
-
-<Item icon="list-alt">
-<Chip 
-  color={txStatus.errorMessage===""?"success":"error"}
-  sx={{fontWeight:700, fontSize: "0.9em", display: 'flex-inline' }}
-  label={txStatus.errorMessage===""?"SUCCESS":"ERROR"}
-  size="small"
-  variant="outlined"  
-  key="result"
-  />
-  &nbsp;
-  <Chip 
-  color={txStatus.status<4?"info":"success"}
-  sx={{fontWeight:700, fontSize: "0.9em", display: 'flex-inline' }}
-  label={`${fmtTransactionStatus(txStatus.status)}`} 
-  size="small"
-  variant="outlined"  
-  key="status"
-  />
-</Item>
-</Group>
-</Box>
-
-<Box direction="row" spacing={2}  sx={{ display: 'flex',  flexWrap: 'wrap' }}
->
-<Group title="Proposer" exact>
-<AccountAddress address={txInfo?.proposalKey?.address} key="proposer" sx={{ display:"flex-inline" }}/>
-</Group>
-
-<Group title="Payer" exact >
-<AccountAddress address={txInfo?.payer} key="payer" sx={{ display:"flex-inline" }}/>
-</Group>
+    </Typography>
 
 
-<Group title="Authorizers" exact >
-{txInfo?.authorizers?.map((auth, i) => (
-  <AccountAddress address={auth} key={"auth"+i} sx={{ display:"flex-inline" }}/>
- ))}
-</Group>
-</Box>
+
+
+    <Box direction="row" spacing={1}  sx={{ marginTop:2, display: 'flex',  flexWrap: 'wrap' }}
+    >
+      <Box sx={{ marginRight:5}}>
+        <Typography component="div" variant="h7">
+          Proposer
+        </Typography>
+        <Typography variant="body" color="text.secondary">
+          <AccountAddress address={txInfo?.proposalKey?.address} key="proposer" />
+        </Typography>
+      </Box>
+
+      <Box sx={{ marginRight:5}}>
+        <Typography component="div" variant="h7">
+          Payer
+        </Typography>
+        <Typography variant="body" color="text.secondary">
+          <AccountAddress address={txInfo?.payer} key="payer" />
+        </Typography>
+      </Box>
+
+      <Box>
+        <Typography component="div" variant="h7">
+          Authorizers
+        </Typography>
+        <Typography variant="body" color="text.secondary">
+          {txInfo?.authorizers?.map((auth, i) => (
+            <AccountAddress address={auth} key={"auth"+i} sx={{ display:"flex-inline" }} />
+          ))}
+        </Typography>
+      </Box>
+
+    </Box>
 
 {txBlock &&
-<Box direction="row" spacing={2}  sx={{ display: 'flex',  flexWrap: 'wrap' }}
->
-  <Group title="Block" exact>
-  <Item icon="hashtag">{txBlock?.height}</Item>
-  <Item icon="fingerprint"> {txBlock?.id}</Item>
-  <Item icon="clock">{ago(new Date(txBlock?.timestamp))} - {dateFormat(new Date(txBlock?.timestamp))}</Item>
+  <Box sx={{marginTop:2}}>
+    <Typography component="div"  variant="h7">
+      Block
+    </Typography>
 
-</Group>
+    <Typography color="text.secondary" variant="body2">
+      <HeightOutlined fontSize="small"/>  {txBlock?.height}
+    </Typography>
 
-</Box>}
+    <Typography color="text.secondary"  variant="body2">
+      <Fingerprint fontSize="small"/>  {txBlock?.id}
+    </Typography>
 
-
-
+    <Typography color="text.secondary"  variant="body2">
+      <TimelapseSharp fontSize="small"/> {ago(new Date(txBlock?.timestamp))} - {dateFormat(new Date(txBlock?.timestamp))}
+    </Typography>
+</Box>
+}
 
 
       <TabContext padding={0} value={value}>
@@ -180,44 +222,59 @@ return (
           </TabList>
         </Box>
 
-        <TabPanel padding={0} value="1"  sx={{flexWrap: 'wrap'}}>
-        <Pre bad>
+        <TabPanel padding={0} value="1"  sx={{marginTop:2, flexWrap: 'wrap'}}>
+        <Pre>
         {txStatus.errorMessage}
-          </Pre>
+        </Pre>
         </TabPanel>
 
 
-        <TabPanel padding={0} value="2">
-          <CodeEditor key="cadence-script" code={dedent(txInfo?.script)} name="cadence-script" lang="rust" />
+        <TabPanel padding={0} value="2" sx={{marginTop:2}}>
+            <CodeEditor key="cadence-script" code={dedent(txInfo?.script)} name="cadence-script" lang="cadence" />
         </TabPanel>
 
-        <TabPanel value="3">
+        <TabPanel value="3" sx={{marginTop:2}}>
           
         {txInfo?.args.map((arg,i) => {
             return (
-              
-                <Group title={argLabels[i]} exact>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  p: 1,
+                  flexDirection: "column",
+                }}
+              >
+                <Typography color="text.secondary">
+                  {argLabels[i].split(":")[0]} &nbsp;
+                  <Chip
+                  color="success"
+                  sx={{ display: 'flex-inline' }}
+                  label={argLabels[i].split(":").slice(1).join(":")}
+                  size="small"
+                  variant="outlined"
+                  key="{argLabels[i]}"
+                />
+
+              </Typography>
                 <CodeEditor key={"arg"+i} prefix={argLabels[i]} type={arg["type"]} index={i} code={cadenceValueToDict(arg, false)} lang="json" />
-              </Group>
+
+              </Box>
+
             ) 
           })}
         
         </TabPanel>
-        <TabPanel value="4">
-          
-          {txStatus.events.map((ev,i) => {
-            return (
-                <Group title={ev.type} exact>
-                    <CodeEditor  key={"ev"+i}  prefix={ev.type} code={ev.data} lang="json" />
-                </Group>
-            )
-          })}
+        <TabPanel value="4" sx={{marginTop:2}}>
+          <Scroll>
+          <CodeEditor  prefix="events" code={txStatus.events} lang="json" />
+          </Scroll>
           </TabPanel>
       </TabContext>
     </Box>
 
 </Page>
-      
+
       </Suspense>
    
 

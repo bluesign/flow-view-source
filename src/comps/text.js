@@ -1,34 +1,8 @@
 import styled, {css} from "styled-components"
 import {useEffect, useState} from "react"
 
-export const H1 = styled.h1`
-  display: flex;
-  align-items: center;
-
-  & > * {
-    margin-right: 13px;
-  }
-`
-export const H2 = styled.h2`
-  display: flex;
-  align-items: center;
-
-  & > * {
-    margin-right: 13px;
-  }
-`
-export const H3 = styled.h3`
-  display: flex;
-  align-items: center;
-
-  & > * {
-    margin-right: 13px;
-  }
-`
 export const H5 = styled.h5`
   display: flex;
-  align-items: center;
-
   & > * {
     margin-right: 13px;
   }
@@ -38,16 +12,9 @@ export const Muted = styled.span`
   color: var(--mute);
   display: inline;
   vertical-align: top;
-  word-break: break-all;
+  word-break: break-word;
 `
 
-export const Good = styled.span`
-  color: green;
-`
-
-export const Bad = styled.span`
-  color: tomato;
-`
 
 export const Pre = styled.pre`
   padding: 5px;
@@ -66,31 +33,11 @@ export const Pre = styled.pre`
     border-radius: 3px;
   }
 
-  ${p => p.bad && "color:var(--bad);"}
 `
 
-export const Json = ({children}) => {
-  return <Pre>{JSON.stringify(children, null, 2)}</Pre>
-}
 
-export const List = styled.ul``
-export const Li = styled.li`
-  margin-bottom: 3px;
-`
 
-export const ListItem = ({label, value, children}) => {
-  return (
-      <div style={{display: "flex"}}>
-        {label != null && <Muted style={{marginRight: "8px"}}>{label}:</Muted>}
-        {value != null && <strong>{value}</strong>}
-      {children}
-      </div>
-  )
-}
 
-export const Details = styled.div`
-  display: flex;
-`
 const Det = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,43 +53,9 @@ const Ascii = styled.pre`
 `
 
 
-export const Button = styled.button`
-  cursor: pointer;
-  background: var(--fg);
-  color: var(--bg);
-  border: none;
-  border-radius: 3px;
-  font-size: 13px;
-  line-height: 34px;
-  padding: 0 21px;
 
-  ${p =>
-    p.disabled
-      ? css`
-          background: var(--mute);
-          color: var(--fg);
-          cursor: default;
-        `
-      : css`
-          &:hover,
-          &:focus {
-            background: var(--wow);
-          }
-        `}
-`
 
-export const A = styled.a``
 
-export const Dance = ({a, b}) => {
-  const [state, setState] = useState(a)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setState(state => (state === a ? b : a))
-    }, 500)
-    return () => clearInterval(interval)
-  }, [a, b])
-  return <Ascii>{state}</Ascii>
-}
 
 const defaultRoll = [
   "[*     ]",

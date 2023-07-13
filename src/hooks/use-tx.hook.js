@@ -5,7 +5,6 @@ export const IDLE = "IDLE"
 export const PROCESSING = "PROCESSING"
 export const SUCCESS = "SUCCESS"
 export const ERROR = "ERROR"
-
 export const PENDING_AUTH = "PENDING_AUTH"
 export const SUBMITTING_TO_CHAIN = "SUBMITTING_TO_CHAIN"
 export const UNKNOWN = "UNKNOWN"

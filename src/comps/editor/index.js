@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import Editor,  { useMonaco } from "@monaco-editor/react";
 import SyntaxHighlighter, { createElement } from 'react-syntax-highlighter';
 import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
 import configureCadence from "./cadence"
+import {useTheme} from "@mui/material"
+import {a11yLight} from "react-syntax-highlighter/src/styles/hljs"
 
 function setEditorReadOnly(readOnly) {
   return (editor, monaco)=>{
@@ -13,7 +16,8 @@ function setEditorReadOnly(readOnly) {
 
 export default function CodeEditor({prefix="", type="", index=0, code = "", onChange = null, name = "RAWR", lang="rust" }) {
   const monaco  = useMonaco();
- 
+  const theme = useTheme();
+
   const isObject = obj => {
     return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
   }
@@ -65,15 +69,18 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
     return node
   }
   if (lang!=="cadence"){
-      return (
+    const highlighterTheme = theme.palette.mode == "dark" ? vs2015:a11yLight
+
+    return (
+
       <SyntaxHighlighter 
           language={lang} 
-          style={vs2015}
+          style={highlighterTheme}
           customStyle={{
+            overflow: "visible",
             fontSize:"14px",
-            margin:0,
-            padding:0,
-            fontFamily: "MonoLisa,JetBrains Mono,Fira Code,monospace",
+            margin: 0,
+            padding: 1,
             backgroundColor:"transparent"
           }}
           renderer={({rows, stylesheet, useInlineStyles})=>{
@@ -97,16 +104,18 @@ export default function CodeEditor({prefix="", type="", index=0, code = "", onCh
       >
       {code}
       </SyntaxHighlighter>
+
       )
   }
 
   if (!monaco) return null;
+  var monacoTheme = theme.palette.mode == "dark" ? "vs-dark":"vs-light"
 
   return (
     <Editor
       height="90vh"
       language="cadence"
-      theme="vs-dark"
+      theme={monacoTheme}
       value={code}
       onChange={onChange}
       onMount={onChange?setEditorReadOnly(false):setEditorReadOnly(true)}

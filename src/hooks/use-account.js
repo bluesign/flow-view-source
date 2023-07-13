@@ -38,15 +38,15 @@ export function useAccount(address) {
   const [$data, setData] = useRecoilState(data(address))
   const [$status, setStatus] = useRecoilState(fsm(address))
   const [storage, setStorage] = useState(null)
- 
+  const [count, setCount] = useState("true")
+
   useEffect(()=>{
     if (!$data) return 
 
-    
 
     fcl
     .query({
-      args: (arg, t) => [arg(address, t.Address)],
+      args: (arg, t) => [arg(address, t.Address), arg(count=="true", t.Bool)],
       cadence: `
       import NonFungibleToken from 0xNonFungibleToken
       import FungibleToken from 0xFungibleToken
@@ -54,7 +54,7 @@ export function useAccount(address) {
       
 
 
-      pub fun main(addr: Address): {String: AnyStruct} {
+      pub fun main(addr: Address, count: Bool): {String: AnyStruct} {
         let acct = getAccount(addr)
         let ret: {String: AnyStruct} = {}
         ret["capacity"] = acct.storageCapacity
@@ -70,14 +70,14 @@ export function useAccount(address) {
           var ft : [{String:AnyStruct}] = []
 
           getAuthAccount(addr).forEachStored(fun (path: StoragePath, type: Type): Bool {
-            for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection","LibraryPassCollection","RaribleNFTCollection"]{
-            if path==StoragePath(identifier: banned){
-                return true
-            }}
-            
             if type.isSubtype(of: Type<@NonFungibleToken.Collection>()){
-              var collection = getAuthAccount(addr).borrow<&NonFungibleToken.Collection>(from:path)!
-              nft.append({"path":path, "count":collection.getIDs().length})
+              if count==true{
+                var collection = getAuthAccount(addr).borrow<&NonFungibleToken.Collection>(from:path)!
+                nft.append({"path":path, "count":collection.getIDs().length})
+              }else{
+                nft.append({"path":path, "count":"???"})
+              }
+              
             }
             else if type.isSubtype(of: Type<@FungibleToken.Vault>()){
               var vault = getAuthAccount(addr).borrow<&FungibleToken.Vault>(from:path)!
@@ -109,9 +109,9 @@ export function useAccount(address) {
         return ret
       }
     `,
-    }).then(setStorage)
+    }).then(setStorage).catch(()=>{setCount(false)})
 
-  }, [address, $data])
+  }, [address, $data, count])
 
   const account = {
     $data,

@@ -2,8 +2,8 @@
 import {useParams} from "react-router-dom"
 import * as fcl from "@onflow/fcl"
 import {Suspense} from "react"
-import Page from "../../comps/page"
-import {useNetworkForAddress } from "../../hooks/use-network";
+import Page from "../comps/page"
+import {useNetworkForAddress } from "../hooks/use-network";
 
 
 
@@ -38,7 +38,9 @@ export default function WrappedContent() {
   useNetworkForAddress(name)
   findAddress(name)  
   
-  return    (<Suspense fallback={<Page>Loading...</Page>}>
+  return (
+
+    <Suspense fallback={<Page>Loading...</Page>}>
 
   <Page >
   </Page>

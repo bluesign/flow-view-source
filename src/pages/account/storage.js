@@ -2,60 +2,43 @@
 /* global BigInt */
 import * as fcl from "@onflow/fcl"
 import * as t from "@onflow/types"
-import { Suspense, useState, useEffect } from "react"
-import { NavLink as Link, useParams } from "react-router-dom"
-import Paper from '@mui/material/Paper';
+import {Suspense, useState, useEffect} from "react"
+import {NavLink, useParams} from "react-router-dom"
+import Paper from "@mui/material/Paper"
 import Card from "@mui/material/Card"
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+import CardMedia from "@mui/material/CardMedia"
+import CardContent from "@mui/material/CardContent"
+import Typography from "@mui/material/Typography"
 
 import Page from "../../comps/page"
-import { AccountSideBar } from "./index"
-import Box from '@mui/material/Box';
+import {AccountSideBar} from "./index"
+import Box from "@mui/material/Box"
 import CodeEditor from "../../comps/editor"
-import { cadenceValueToDict } from "../../util/fmt-flow.util"
-import { Group, Item, storageUrl, nftUrl } from "../../comps/base"
+import {cadenceValueToDict} from "../../util/fmt-flow.util"
+import {storageUrl, nftUrl, Icon} from "../../comps/base"
 
-import { CardActionArea } from '@mui/material';
-import { Muted } from "../../comps/text"
+import {CardActionArea, Link} from "@mui/material"
+import {Muted} from "../../comps/text"
+import * as React from "react"
+import Stack from "@mui/material/Stack"
 
 const style = {
   heading: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    letterSpacing: '0.5px',
-    marginTop: 1,
-    marginBottom: 0,
+    fontSize: 15, fontWeight: "bold", letterSpacing: "0.5px", marginTop: 1, marginBottom: 0,
   },
 
   subheader: {
-    fontSize: 14,
-    color: "gray",
-  }
+    fontSize: 14, color: "gray",
+  },
 }
 
 const card = {
-  margin: 1,
-  padding: 1,
-  borderRadius: 4,
-  width: 200,
-  textAlign: 'left',
-  backgroundColor: "black",
-  border: 1,
-  borderColor: "gray",
+  margin: 1, padding: 1, borderRadius: 4, width: 200, textAlign: "center", border: 1, borderColor: "lightgray",
 }
 
 
-
 const cardBig = {
-  fontSize: "13px",
-  flex: 1,
-  borderRadius: 4,
-  minWidth: 200,
-  textAlign: 'left',
-  border: 0,
-  borderColor: "gray",
+  fontSize: "13px", flex: 1, borderRadius: 4, minWidth: 200,  border: 0, borderColor: "lightgray",
 }
 
 const media = {
@@ -64,44 +47,47 @@ const media = {
   padding: 0,
   borderRadius: 2,
   width: 200,
-  textAlign: 'left',
-  backgroundColor: "black",
+  textAlign: "left",
   border: 0,
   borderColor: "gray",
 }
 const mainMedia = {
-  maxWidth:"100%",
-  borderRadius: 2,
-
-  objectFit: "contain",
+  maxWidth: "40vh", borderRadius: 2, objectFit: "contain",
 }
 
 
-
-function NFTCollectionDisplay({ view }) {
+function NFTCollectionDisplay({view}) {
   if (!view) return null
   view = view["MetadataViews.NFTCollectionDisplay"]
-  return (
-    <Group icon="circle-info" title="Collection Information">
-      <Item>{view["name"]}</Item>
-      <Item><Muted>{view["description"]}</Muted></Item>
-    </Group>
+  return (<Box>
+      <Typography component="p" variant="subtitle2" fontWeight="bold" sx={{paddingBottom:1}}>
+        <Icon icon="solid fa-info-circle" />Collection Information
+      </Typography>
+
+      <Typography component="p" variant="body2">
+          {view["name"]}
+      </Typography>
+      <Typography component="p" variant="body2">
+          <Muted> {view["description"]}</Muted>
+      </Typography>
+    </Box>
+
   )
 }
-function NFTDisplay({ id, view }) {
-  const { address, domain, path } = useParams()
 
-  return (
-    <Card sx={card}>
-      <CardActionArea component={Link} to={nftUrl(address, domain, path, id)}>
+function NFTDisplay({id, view}) {
+  const {address, domain, path} = useParams()
+
+  return (<Card variant="elevation" sx={card}>
+      <CardActionArea component={NavLink} to={nftUrl(address, domain, path, id)}>
         <CardMedia
           component="img"
-          height="100"
+          height="200px"
           image={parseFile(view["MetadataViews.Display"]["thumbnail"])}
         />
         <CardContent>
-          <Typography component="div" sx={style.heading}>
-            {view["MetadataViews.Display"]["name"].toUpperCase()}
+          <Typography component="div" variant="subtitle2" fontWeight="bold">
+            {view["MetadataViews.Display"]["name"]}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -110,25 +96,37 @@ function NFTDisplay({ id, view }) {
 
   )
 }
-function NFTDisplayText({ view, children }) {
+
+function NFTDisplayText({view, children}) {
   if (!view) return null
   view = view["MetadataViews.Display"]
-  return (
-    <Box>
-              <Box
-              component="img"
-              sx={mainMedia}
-                src={parseFile(view["thumbnail"])}
-              />
-      <Group title={view["name"].toUpperCase()}>
-         <Item><Muted>{view["description"]}</Muted></Item>
-       </Group>
-        
+  return (<Box>
+
+      <Stack spacing={2} padding={1}>
+
+        <Box
+          component="img"
+          sx={mainMedia}
+          src={parseFile(view["thumbnail"])}
+        />
+
+        <Typography component="p" variant="subtitle1" fontWeight="bold">
+          {view["name"]}
+        </Typography>
+
+        <Typography component="p" variant="body2">
+          <Muted>{view["description"]}</Muted>
+        </Typography>
+
+
         {children}
-      </Box>
+      </Stack>
+
+    </Box>
 
   )
 }
+
 function parseFile(f) {
   if (!f) return ""
 
@@ -147,6 +145,7 @@ function parseFile(f) {
   return ""
 
 }
+
 function parseMime(f) {
   if (!f) return ""
   if (f["MetadataViews.Media"]) {
@@ -156,125 +155,150 @@ function parseMime(f) {
   return ""
 
 }
-function Medias({ view }) {
+
+function Medias({view}) {
   if (!view) return null
   view = view["MetadataViews.Medias"]
 
   return (
 
-    <Group icon="photo-film" title="Medias">
-
-      <Item>{view["name"]}</Item>
-      <Item><Muted>{view["description"]}</Muted></Item>
+    <Box>
+      <Typography component="p" variant="subtitle1" sx={{paddingBottom:1}}>
+        <Icon icon="solid fa-photo-film"/> Medias
+      </Typography>
+      <Typography component="p" variant="subtitle1">
+        {view["name"]}
+      </Typography>
+      <Typography component="p" variant="subtitle1">
+        <Muted>{view["description"]}</Muted>
+      </Typography>
 
       <Box padding={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"} minWidth={200}>
-
 
         {view["items"].map(item => {
           var mime = parseMime(item)
           if (mime.indexOf("video") > -1) {
             mime = "video"
-          }
-          else {
+          } else {
             mime = "img"
           }
-          return (
-            <Card sx={media} raised>
-              <CardMedia
-                src={parseFile(item)}
-                component={mime}
-                controls
-              />
-            </Card>
-          )
-        }
-
-        )}
+          return (<Card sx={media} >
+            <CardMedia
+              src={parseFile(item)}
+              component={mime}
+              controls
+            />
+          </Card>)
+        })}
       </Box>
-    </Group>
+
+    </Box>
 
 
   )
 }
-function Royalties({ view }) {
+
+function Royalties({view}) {
   if (!view) return null
   view = view["MetadataViews.Royalties"]
   if (view["cutInfos"].length === 0) return null
-  return (
-    <Group icon="coins" title="Royalties">
-      {view["cutInfos"] && view["cutInfos"].map(item =>
-        <div>
-          <Item>{item["MetadataViews.Royalty"]["description"]}</Item>
-          <Item>&nbsp;Address:&nbsp; <Muted>  {item["MetadataViews.Royalty"]["receiver"]["<Capability>"]["address"]} </Muted></Item>
-          <Item>&nbsp;Cut:&nbsp; <Muted>  {item["MetadataViews.Royalty"]["cut"]} </Muted></Item>
-        </div>
-      )
-      }
-    </Group>
-  )
+  return (<Box>
+    <Typography component="p" variant="subtitle1" sx={{paddingBottom:1}}>
+      <Icon icon="solid fa-coins" />Royalties
+    </Typography>
+
+      {view["cutInfos"] && view["cutInfos"].map(item => <Box key={item.toString()} sx={{paddingBottom:1}}>
+        <Typography component="p" variant="subtitle2" >
+          Royalty
+        </Typography>
+
+        <Typography component="p" variant="body2">
+            <Muted>  {item["MetadataViews.Royalty"]["description"]}</Muted>
+        </Typography>
+
+        <Typography component="p" variant="body2">
+        Address:&nbsp;
+            <Muted>  {item["MetadataViews.Royalty"]["receiver"]["<Capability>"]["address"]} </Muted>
+        </Typography>
+        <Typography component="p" variant="body2">
+        Cut:&nbsp; <Muted>  {item["MetadataViews.Royalty"]["cut"]} </Muted>
+        </Typography>
+
+
+      </Box>)}
+
+  </Box>)
 }
-function Editions({ view }) {
+
+function Editions({view}) {
   if (!view) return null
   view = view["MetadataViews.Editions"]
-  return (
-    <Group icon="registered" title="Edition">
-      {view["infoList"] && view["infoList"].map(item =>
-        <div>
-          {item["MetadataViews.Edition"]["name"] && <Item>Name:&nbsp; <Muted>{item["MetadataViews.Edition"]["name"]}</Muted></Item>}
-          {item["MetadataViews.Edition"]["number"] != null && <Item>Number:&nbsp; <Muted>{item["MetadataViews.Edition"]["number"]}</Muted></Item>}
-          {item["MetadataViews.Edition"]["max"] != null && <Item>Max:&nbsp; <Muted>{item["MetadataViews.Edition"]["max"]}</Muted></Item>}
-        </div>)
-      }
-    </Group>
-  )
+  return (<Box>
+    <Typography component="p" variant="subtitle1" sx={{paddingBottom:1}}>
+      <Icon icon="solid fa-registered" />Edition
+    </Typography>
+    {view["infoList"] && view["infoList"].map(item => <div>
+      {item["MetadataViews.Edition"]["name"] &&
+        <div>Name:&nbsp; <Muted>{item["MetadataViews.Edition"]["name"]}</Muted></div>}
+      {item["MetadataViews.Edition"]["number"] != null &&
+        <div>Number:&nbsp; <Muted>{item["MetadataViews.Edition"]["number"]}</Muted></div>}
+      {item["MetadataViews.Edition"]["max"] != null &&
+        <div>Max:&nbsp; <Muted>{item["MetadataViews.Edition"]["max"]}</Muted></div>}
+    </div>)}
+
+  </Box>)
 }
-function ExternalURL({ view }) {
+
+function ExternalURL({view}) {
   if (!view) return null
   view = view["MetadataViews.ExternalURL"]
 
-  return (
-    <Group icon="link" title="External URL">
-      {
-        <Item as={Link} to={{ pathname: view["url"] }} target="_blank">
-          {view["url"]}
-        </Item>
-
-
-      }
-    </Group>
-  )
+  return (<Box>
+    <Typography component="p" variant="subtitle1" sx={{paddingBottom:1}}>
+      <Icon icon="solid fa-link" /> External URL
+    </Typography>
+    <a className="externalLink" href={view["url"]} target="_blank">
+      {view["url"]}
+    </a>
+  </Box>)
 }
-function Serial({ view }) {
+
+function Serial({view}) {
   if (!view) return null
   view = view["MetadataViews.Serial"]
 
-  return (
-    <Group icon="hashtag" title="Serial">
-      <Item>Number:&nbsp; <Muted>{view["number"]}</Muted></Item>
-    </Group>
-  )
+  return (<Box>
+    <Typography component="p" variant="subtitle1" sx={{paddingBottom:1}}>
+      <Icon icon="solid fa-hashtag" />Serial
+    </Typography>
+    <div>Number:&nbsp; <Muted>{view["number"]}</Muted></div>
+  </Box>)
 }
-function Traits({ view }) {
+
+function Traits({view}) {
   if (!view) return null
   view = view["MetadataViews.Traits"]
   if (view["traits"].length === 0) return null
-  return (
-    <Group icon="bars" title="Traits">
-      {view["traits"] && view["traits"].map(trait =>{
+  return (<Box>
+      <Typography component="p" variant="subtitle1" sx={{paddingBottom:1}}>
+        <Icon icon="solid fa-bars" /> Traits
+      </Typography>
+      {view["traits"] && view["traits"].map(trait => {
         const value = trait["MetadataViews.Trait"]["value"].toString()
         const name = trait["MetadataViews.Trait"]["name"]
 
-        return(
-          <Item>{name}:&nbsp;<Muted title={value}>{value}</Muted> </Item>)}
-        )
-      }
-    </Group>
+        return (<div>{name}:&nbsp;<Muted title={value}>{value}</Muted></div>)
+      })}
+
+    </Box>
+
 
   )
 
 }
+
 export function Content() {
-  const { address, domain, path, uuid } = useParams()
+  const {address, domain, path, uuid} = useParams()
   const [storage, setStorage] = useState(null)
   const [storageRaw, setStorageRaw] = useState(null)
 
@@ -306,16 +330,13 @@ export function Content() {
                     
                   }
                   
-                `),
-      fcl.args(
-        [fcl.arg(address, t.Address), fcl.arg(path, t.String)]
-      )]
-      ).then((v) => {
+                `), fcl.args([fcl.arg(address, t.Address), fcl.arg(path, t.String)])]).then((v) => {
         setStorage(cadenceValueToDict(v.encodedData, true))
         setStorageRaw(cadenceValueToDict(v.encodedData, false))
 
-      })
+      }).catch(()=>{})
     }
+
     async function browseNFT(path, uuid) {
       fcl.send([fcl.script(`
                    import MetadataViews from 0xMetadataViews
@@ -327,7 +348,7 @@ export function Content() {
                         var res : {String:AnyStruct} = {}
                         
                         var vr = meta?.borrowViewResolver(id:uuid)
-                        if let  views = vr?.getViews(){
+                        if let views = vr?.getViews(){
 
                         for mdtype in views{
 
@@ -345,27 +366,20 @@ export function Content() {
                         return res
                     }
                     
-                  `),
-      fcl.args(
-        [fcl.arg(address, t.Address), fcl.arg(path, t.String), fcl.arg(uuid, t.UInt64)]
-      )]
-      ).then((v) => {
+                  `), fcl.args([fcl.arg(address, t.Address), fcl.arg(path, t.String), fcl.arg(uuid, t.UInt64)])]).then((v) => {
         setStorage(cadenceValueToDict(v.encodedData, true))
         setStorageRaw(cadenceValueToDict(v.encodedData, false))
 
-      })
+      }).catch(()=>{})
     }
+
     async function browseLink(domain, path) {
       fcl.send([fcl.script(`
 
                   pub fun main(address: Address) : [{String:AnyStruct}]{
                     var res :  [{String:AnyStruct}] = []
                     getAuthAccount(address).forEach${domain}(fun (path: ${domain}Path, type: Type): Bool {
-                      for banned in ["MusicBlockCollection", "FantastecNFTCollection","ZayTraderCollection","jambbLaunchCollectiblesCollection","RaribleNFTCollection"]{
-                      if path==${domain}Path(identifier: banned){
-                        return true
-                      }
-                    }
+                     
                       res.append( {
                         "path" : path,
                         "borrowType" : type, 
@@ -377,29 +391,23 @@ export function Content() {
                     
                     return res
                   }
-                `),
-      fcl.args(
-        [fcl.arg(address, t.Address)]
-      )]
-      ).then((v) => {
+                `), fcl.args([fcl.arg(address, t.Address)])]).then((v) => {
         setStorage(cadenceValueToDict(v.encodedData, false))
         setStorageRaw(cadenceValueToDict(v.encodedData, false))
 
-      })
+      }).catch(()=>{})
     }
 
     if (domain === "storage") {
 
       if (uuid == null) {
         browseStorage(path)
-      }
-      else {
+      } else {
         browseNFT(path, uuid)
       }
     }
     if (domain === "public") browseLink("Public", path)
     if (domain === "private") browseLink("Private", path)
-
 
 
   }, [path, address, domain, uuid])
@@ -413,73 +421,66 @@ export function Content() {
   var hasNFTdisplay = storage && !Array.isArray(storage) && Object.keys(storage).length && storage[Object.keys(storage)[0]]["MetadataViews.Display"]
   var hasCustomDisplay = storage && (hasNFTdisplay)
 
-  return (
-    <Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}>
+  return (<Box marginLeft={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}>
 
-      {hasNFTdisplay && storage && Object.keys(storage).map((displayViewKey) => (
-        <NFTDisplay key={displayViewKey} view={storage[displayViewKey]} id={displayViewKey} />
-      )
-      )}
+    {hasNFTdisplay && storage && Object.keys(storage).map((displayViewKey) => (
+      <NFTDisplay key={displayViewKey} view={storage[displayViewKey]} id={displayViewKey} />))}
 
-      {!hasCustomDisplay && storage && storage.map &&
-        (domain === "public" || domain === "private") &&
-        <Box direction="row">
-          {storage.map(link =>
+    {!hasCustomDisplay && storage && storage.map && (domain === "public" || domain === "private") &&
+      <Box direction="row">
+        {storage.map(link =>
 
-            <div>
-              {link &&
-                <Group icon="link" title={link.path}>
-                  <Item icon="text">{link.borrowType}</Item>
+          <div>
+            {link && <Typography component="p" variant="body2">
 
-                  <Item icon="crosshairs" as={Link} to={storageUrl(address, link.target.split("/")[0], link.target.split("/")[1])}>{link.target}</Item>
+              <Typography component="p" variant="body2">
+                <Icon icon="solid fa-link" />{link.path}
+              </Typography>
+              <Typography component="p" variant="body2">
+                <Icon icon="solid fa-archive" />
+                <Muted>{link.borrowType}</Muted>
 
-                </Group>
-              }
-              <br />
-            </div>
+              </Typography>
+              <Typography component="p" variant="body2">
+                <Icon icon="solid fa-crosshairs" />
+                <Link
+                  to={storageUrl(address, link.target.split("/")[0], link.target.split("/")[1])}>{link.target}</Link>
+              </Typography>
+            </Typography>}
+            <br />
+          </div>)}
+      </Box>}
+    {uuid != null && <div>
+      <Box margin={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"}>
 
-          )}
+        <Box sx={cardBig} >
+          <NFTDisplayText view={storage["MetadataViews.Display"]}>
+            <ExternalURL view={storage["MetadataViews.ExternalURL"]} />
+            <Editions view={storage["MetadataViews.Editions"]} />
+            <Serial view={storage["MetadataViews.Serial"]} />
+            <Traits view={storage["MetadataViews.Traits"]} />
+          </NFTDisplayText>
         </Box>
-      }
-      {uuid != null &&
-        <div>
-          <Box margin={1} display={"flex"} flexDirection={"row"} flexWrap={"wrap"} >
+        <Box sx={cardBig} margin={3} >
+          <NFTCollectionDisplay view={storage["MetadataViews.NFTCollectionDisplay"]} />
+          <br />
+          <Royalties view={storage["MetadataViews.Royalties"]} />
+          <br />
+          <Medias view={storage["MetadataViews.Medias"]} />
+        </Box>
+      </Box>
+    </div>}
 
-          <Box sx={cardBig} raised>
-            <NFTDisplayText view={storage["MetadataViews.Display"]}>
-              <ExternalURL view={storage["MetadataViews.ExternalURL"]} />
-              <Editions view={storage["MetadataViews.Editions"]} />
-              <Serial view={storage["MetadataViews.Serial"]} />
-              <Traits view={storage["MetadataViews.Traits"]} />
+    {uuid == null && !hasCustomDisplay && storage && (domain === "storage") &&
+      <CodeEditor key="storage" prefix={domain} type="" index={0} code={storageRaw} lang="json" />}
 
-            </NFTDisplayText>
-          </Box>
-            <Box sx={cardBig} margin={3} raised>
-
-                <NFTCollectionDisplay view={storage["MetadataViews.NFTCollectionDisplay"]} />
-                <br />
-                <Royalties view={storage["MetadataViews.Royalties"]} />
-                <br />
-                <Medias view={storage["MetadataViews.Medias"]} />
-            </Box>
-          </Box>
-        </div>
-      }
-
-      {uuid == null && !hasCustomDisplay && storage &&
-        (domain === "storage") &&
-        <CodeEditor key="storage" prefix={domain} type="" index={0} code={storageRaw} lang="json" />
-      }
-
-    </Box>
-  )
+  </Box>)
 }
+
 export default function WrappedPpage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Page sideContent={<AccountSideBar />}>
-        <Content />
-      </Page>
-    </Suspense>
-  )
+  return (<Suspense fallback={<div>Loading...</div>}>
+    <Page sideContent={<AccountSideBar />}>
+      <Content />
+    </Page>
+  </Suspense>)
 }

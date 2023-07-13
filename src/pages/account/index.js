@@ -2,18 +2,25 @@ import {Suspense} from "react"
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 
-import {NavLink as Link, useParams} from "react-router-dom"
-
+import {useParams} from "react-router-dom"
 
 import {useAccount} from "../../hooks/use-account"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
-import {Group, Item, HR, contractUrl, storageUrl, keysUrl} from "../../comps/base"
+import {contractUrl, storageUrl, Icon, accountUrl} from "../../comps/base"
 import {Keys} from "./keys"
 import { Content as Contracts } from "./contract";
 import Page from "../../comps/page"
 import {Content as Storage } from "./storage"
+import Typography from "@mui/material/Typography"
+import * as React from "react"
+import Box from "@mui/material/Box"
+import {Button, Link} from "@mui/material"
+import {alpha, styled as mstyled} from "@mui/material/styles"
+import {Muted} from "../../comps/text"
+
+
 
 function storageCapacity(storage) {
   let used = storage?.used ?? 1
@@ -21,19 +28,28 @@ function storageCapacity(storage) {
   return ((used / capacity) * 100).toFixed(2) + "%"
 }
 
+const SideBar = mstyled('div')(({ theme }) => ({
+  display:'block',
+  height:"100vh",
+  width:"300px",
+  minWidth:"300px",
+  maxWidth:"300px",
+  objectFit:"contain",
+  overflowX: "hidden",
+  overflowY: "auto",
+  scrollbarWidth:"0",
+  backgroundColor:  alpha(theme.palette.background.paper, 0.025),
+}));
+
+
 export function AccountSideBar() {
   const {address} = useParams()
-
-
   const network = useNetworkForAddress(address)
   const user = useCurrentUser()
   const account = useAccount(address)
-
-
-  //const fusdBalance = useFusdBalance(address)
-
   const accountStorage = account?.storage
   const contracts = account?.contractNames
+  const [expanded, setExpanded] = React.useState("");
 
   const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(address)
  
@@ -55,100 +71,221 @@ export function AccountSideBar() {
     return 0;
   })
 
+  const handleChange =
+    (panel) => (event, isExpanded) => {
+      setExpanded(isExpanded ? panel : false);
+    };
+
 
   return (
-    <Stack className={"sidebar"} paddin={1} margin={1} spacing={3} borderRight={1} sx={{height:"100vh", minWidth:"300px", width:"300px", overflowY:"scroll", scrollbarWidth:"0", position:"fixed" , paddingTop:"85px", top:"-15px"}} >
-      
-     
-        <Group title={
-        <Item as={Link}  to={keysUrl(address)} icon="ghost">  {address} - [{network}] </Item>} >
-        </Group>
-        
-        {accountStorage && accountStorage?.find && 
-        <Group icon="search" title=".find Profile">
-          <Stack margin={0} spacing={1} direction="row" >
+    <SideBar>
+    <Stack padding={1} margin={0} spacing={3} borderRight={0} >
 
-          <Avatar src={accountStorage?.find.avatar} />
-          <div>
-            <Item as={Link} to={{pathname: `https://find.xyz/${accountStorage?.find.name}`}} target="_blank"> {accountStorage?.find.name}.find  </Item>
-            <Item> {accountStorage?.find.description}  </Item>
-            </div>
+      <Box>
 
+      <Typography component="p" variant="body2">
+        <b>{address} - {network} </b>
+      </Typography>
+
+
+
+      </Box>
+
+        {accountStorage && accountStorage?.find &&
+          <Box>
+
+            <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
+            <b>.find Profile </b>
+          </Typography>
+
+            <Stack marginLeft={1} spacing={0} direction="row" >
+              <Avatar src={accountStorage?.find.avatar} />
+             <Box>
+                <Typography component="p" variant="body2" sx={{marginLeft:1}}>
+                  <a className="externalLink" href={`https://find.xyz/${accountStorage?.find.name}`} target="_blank" >
+                    {accountStorage?.find.name}.find
+                  </a>
+
+               </Typography>
+               <Typography  component="p" variant="body2" sx={{marginLeft:1}}>
+                <Muted> {accountStorage?.find.description}</Muted>
+               </Typography>
+             </Box>
             </Stack>
-        </Group>
 
+          </Box>
         }
 
-      { (IS_CURRENT_USER || contracts?.length > 0) &&
-        <Group icon="code" title={`${contracts?.length} Contracts`}>
-          {contracts.map(name => (
-            <Item icon="scroll-old" key={name} as={Link} to={contractUrl(address, name)}>
-              {name}
 
-            </Item>
+      { (IS_CURRENT_USER || contracts?.length > 0) &&
+        <Box>
+          <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
+            <b>Contracts</b>
+          </Typography>
+
+          <Typography component="p" variant="body2" >
+          {contracts.map(name => (
+            <div key={`contract_${name}`}>
+              <Button
+                color={"gray"}
+                size="medium"
+                fullWidth={true}
+                variant="text"
+                startIcon={<Icon icon="solid fa-note-sticky"/>}
+                to={contractUrl(address, name)}
+                sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0, marginLeft: 1 }}}
+              >
+                   {name}
+              </Button>
+            </div>
+
           ))}
-          {IS_CURRENT_USER && <HR />}
-          {IS_CURRENT_USER && (
-            <Item icon="plus" as={Link} to={contractUrl(address, "new")}>
-              New Contract
-            </Item>
-          )}
-        </Group>
+
+            {IS_CURRENT_USER &&
+              <Typography component="p" variant="body2" sx={{marginLeft:2}}>
+                <Link color="text.secondary" underline="hover" to={contractUrl(address, "contract-new")} >
+                  <Icon icon="plus"/>New Contract
+                </Link>
+              </Typography>
+            }
+          </Typography>
+
+
+        </Box>
       }
 
 
+      <Box>
+        <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
+          <b>FT Vaults</b>
+        </Typography>
 
 
 
-        <Group icon="warehouse" title={`FT Vaults`} >
         {accountStorage && accountStorage?.ft.sort(function compareFn(a, b) { return a.balance < b.balance}).map(vault => (
-            <Item icon="coins" key={vault.path.domain+"/"+vault.path.identifier} as={Link} to={storageUrl(address, vault.path.domain, vault.path.identifier)}>
-            {vault.path.identifier} - {(Math.round(vault.balance * 100) / 100).toFixed(2)}
-            </Item>
-        
-        ))}
-      </Group
+    <div key={`vault_${vault.path.identifier}`}>
+      <Button
+        color={"gray"}
+        size="medium"
+        fullWidth={true}
+        variant="text"
+        startIcon={<Icon icon="solid fa-coins"/>}
+        to={storageUrl(address, vault.path.domain, vault.path.identifier)}
+        sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0,marginLeft: 1 }}}
       >
- 
+        {vault.path.identifier} - {(Math.round(vault.balance * 100) / 100).toFixed(2)}
+      </Button>
+    </div>
+
+
+        ))}
+
+      </Box>
+
       {accountStorage?.nft.length>0 &&
-      <Group icon="photo-film" title={`NFT Collections`} >
-        {accountStorage && accountStorage?.nft.map(collection => (
-          <Item icon="folder" key={collection.path.domain+"/"+collection.path.identifier}  as={Link} to={storageUrl(address, collection.path.domain, collection.path.identifier)}>
-            {collection.path.identifier}({collection.count})
-          </Item>
+        <Box>
+          <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
+            <b>NFT Collections</b>
+          </Typography>
+
+          {accountStorage && accountStorage?.nft.map(collection => (
+           <div key={`collection_${collection.path.identifier}`}>
+             <Button
+               color={"gray"}
+               size="medium"
+               fullWidth={true}
+               variant="text"
+               startIcon={<Icon icon="solid fa-folder"/>}
+               to={storageUrl(address, collection.path.domain, collection.path.identifier)}
+               sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0,marginLeft: 1 }}}
+             >
+               {collection.path.identifier}({collection.count})
+             </Button>
+           </div>
+
+
         
         ))}
-      </Group>}
+      </Box>}
 
-      <Group icon="link" title={`Links`} >
-          <Item icon="link" key="Public"  as={Link} to={storageUrl(address, "public", "list")}>
-          Public
-          </Item>
-          <Item icon="link" key="Private"  as={Link} to={storageUrl(address, "private", "list")}>
-          Private
-          </Item>
-      </Group>
+      <Box>
+        <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
+          <b>Links</b>
+        </Typography>
 
-      <Group icon="database" title={`Storage ${storageCapacity(accountStorage)} Capacity`} >
+
+          <Button
+            color={"gray"}
+            size="medium"
+            fullWidth={true}
+            variant="text"
+            startIcon={<Icon icon="solid fa-link"/>}
+            to={storageUrl(address, "public", "list")}
+            sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0,marginLeft: 1 }}}
+          >
+            Public
+          </Button>
+
+
+          <Button
+            color={"gray"}
+            size="medium"
+            fullWidth={true}
+            variant="text"
+            startIcon={<Icon icon="solid fa-link"/>}
+            to={storageUrl(address, "private", "list")}
+            sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0,marginLeft: 1 }}}
+          >
+            Private
+          </Button>
+
+
+
+
+      </Box>
+
+
+      <Box>
+        <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
+          <b>Storage </b>  &nbsp; {storageCapacity(accountStorage)} Capacity
+        </Typography>
+
         {accountStorage && accountStorage?.paths.map(path => (
-          <Item icon="folder" key={path.domain+"/"+path.identifier}  as={Link} to={storageUrl(address, path.domain, path.identifier)}>
+          <div  key={`storageraw_${path.identifier}`}>
+          <Button
+            color={"gray"}
+            size="medium"
+            fullWidth={true}
+            variant="text"
+            startIcon={<Icon icon="solid fa-folder"/>}
+            to={storageUrl(address, path.domain, path.identifier)}
+            sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0,marginLeft: 1 }}}
+          >
             {path.identifier}
-          </Item>
-        
+          </Button>
+          </div>
         ))}
-      </Group>
+
+
+
+      </Box>
+
+      <br/>
+      <br/>
+      <br/>
+      &nbsp;
 
  
 
-  </Stack>       
+  </Stack>
+    </SideBar>
 
   )
 }
 
 export default function WrappedContent() {
   const {name, domain} = useParams()
-  
-  
+
   var content = <Keys/>
   if (name!=null){
     content = <Contracts/>

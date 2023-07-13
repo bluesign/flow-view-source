@@ -6,13 +6,12 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
 import CssBaseline from '@mui/material/CssBaseline';
 
 import Account from "./pages/account"
-import Find from "./pages/account/find"
+import Find from "./util/find"
 
 import AccountContractNew from "./pages/account/contract-new"
 import {TxStatus} from "./pages/tx-status"
 
 import Page from "./comps/page"
-import Box from"@mui/material/Box"
 
 import {ThemeProvider, createTheme, alpha} from "@mui/material/styles"
 import { getNetworkConfig } from "./hooks/use-network"
@@ -24,35 +23,11 @@ import '@fontsource/roboto/700.css';
 
 import WebFont from 'webfontloader';
 import {createGlobalStyle} from "styled-components"
-
-
-const darkTheme = createTheme({
-  components: {
-    MuiTabPanel: {
-      styleOverrides: {
-        root: {
-          padding: '0px',
-        }
-      }
-    }
-  },
-  palette: {
-    mode: 'dark',
-  },
-  typography: {
-    fontFamily: "Inter, MonoLisa, JetBrains Mono, Fira Code, monospace",
-    button: {
-      textTransform: 'none'
-    },     
-    }
-});
-
+import {getCookie} from "react-use-cookie"
 
 
 export const GlobalStyles = createGlobalStyle`
   :root {
-    --bg: #1f1f1f;
-    --fg: #ababab;
     --mute: #787878;
     --wow: #ff00cc;
     --alt: #cc00ff;
@@ -60,19 +35,11 @@ export const GlobalStyles = createGlobalStyle`
     --good: lime;
     --hi: rgba(66, 0, 255, 0.25);
     --subtle: rgba(255, 255, 255, 0.1);
-    --font-family: "Inter", "MonoLisa", "JetBrains Mono", "Fira Code", monospace;
   }
-  ::selection {
-    background: var(--fg);
-    color: var(--bg);
-  }
-
+  
   html, body {
     border:0;
     margin:0;
-    font-family: var(--font-family);
-    background: var(--bg);
-    color: var(--fg);
   }
 
   progress {
@@ -87,12 +54,15 @@ export const GlobalStyles = createGlobalStyle`
 `
 
 
+
 window.fcl = fcl
 window.t = fcl.t
 window.query = fcl.query
 window.mutate = fcl.mutate
 window.config = fcl.config
 window.currentUser = fcl.currentUser
+
+
 fcl.currentUser().subscribe(user => console.log("Current User", user))
 window.addEventListener("FLOW::TX", d => console.log(d.type, d.detail.delta + "ms", d.detail.txId))
 window.xform = (value, from, to) => {
@@ -112,14 +82,13 @@ export function NoMatch() {
     }
   });
 
- 
+
+
 
 // prettier-ignore
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-    <ThemeProvider theme={darkTheme}>
-    <CssBaseline />
       <GlobalStyles />
       <Router>
         <Switch>
@@ -134,7 +103,6 @@ ReactDOM.render(
           <Route exact path="/:address([0-9a-fA-F]{8,16})/contract/new" component={AccountContractNew} />
           <Route exact path="/:address([0-9a-fA-F]{8,16})/:name" component={Account} />
           
-          
 
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})" component={Account} />
           <Route exact path="/:address(0x[0-9a-fA-F]{8,16})/keys" component={Account}/>
@@ -147,7 +115,6 @@ ReactDOM.render(
           <Route component={NoMatch} />
         </Switch>
       </Router>
-      </ThemeProvider>
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById("root")
