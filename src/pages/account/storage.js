@@ -443,8 +443,10 @@ export function Content() {
               </Typography>
               <Typography component="p" variant="body2">
                 <Icon icon="solid fa-crosshairs" />
-                <Link
-                  to={storageUrl(address, link.target.split("/")[0], link.target.split("/")[1])}>{link.target}</Link>
+
+                { link.target && <Link
+                  to={storageUrl(address, link.target.split("/")[0], link.target.split("/")[1])}>{link.target}</Link> }
+
               </Typography>
             </Typography>}
             <br />
