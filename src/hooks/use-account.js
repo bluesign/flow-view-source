@@ -1,6 +1,6 @@
 import {atomFamily, selectorFamily, useRecoilState} from "recoil"
 import * as fcl from "@onflow/fcl"
-import {withPrefix} from "../util/address.util"
+import {getNetworkFromAddress, withPrefix} from "../util/address.util"
 import { useEffect, useState } from "react"
 
 export const IDLE = "IDLE"
@@ -39,6 +39,12 @@ export function useAccount(address) {
   const [$status, setStatus] = useRecoilState(fsm(address))
   const [storage, setStorage] = useState(null)
   const [count, setCount] = useState("true")
+
+  var authAccountCall = "getAuthAccount(address)"
+  if (getNetworkFromAddress(address)=="previewnet"){
+    authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
+  }
+ 
 
   useEffect(()=>{
     if (!$data) return 
@@ -110,6 +116,17 @@ export function useAccount(address) {
       }
     `,
     }).then(setStorage).catch(()=>{setCount(false)})
+    var cadenceCode = `  
+      import FDNZ from 0xFDNZ
+      access(all) fun main(address: Address): {String: AnyStruct} {
+        return FDNZ.getAccountData(${authAccountCall})    
+      }
+    `
+    fcl
+    .query({
+      args: (arg, t) => [arg(address, t.Address)],
+      cadence: cadenceCode,
+    }).then(setStorage)
 
   }, [address, $data, count])
 

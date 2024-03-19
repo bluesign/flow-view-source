@@ -8,6 +8,7 @@ import {useAccount} from "../../hooks/use-account"
 import {useCurrentUser} from "../../hooks/use-current-user"
 import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
+import {getNetworkFromAddress} from "../../util/address.util"
 import {contractUrl, storageUrl, Icon, accountUrl} from "../../comps/base"
 import {Keys} from "./keys"
 import { Content as Contracts } from "./contract";
@@ -19,8 +20,6 @@ import Box from "@mui/material/Box"
 import {Button, Link} from "@mui/material"
 import {alpha, styled as mstyled} from "@mui/material/styles"
 import {Muted} from "../../comps/text"
-
-
 
 function storageCapacity(storage) {
   let used = storage?.used ?? 1
@@ -249,6 +248,18 @@ export function AccountSideBar() {
         <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
           <b>Storage </b>  &nbsp; {storageCapacity(accountStorage)} Capacity
         </Typography>
+      <Group icon="link" title={`Links`} >
+          <Item icon="link" key="Public"  as={Link} to={storageUrl(address, "public", "list")}>
+          Public
+          </Item>
+        {(getNetworkFromAddress(address)!=="previewnet") &&
+    
+          <Item icon="link" key="Private"  as={Link} to={storageUrl(address, "private", "list")}>
+          Private
+          </Item>
+        }
+    
+    </Group>
 
         {accountStorage && accountStorage?.paths.map(path => (
           <div  key={`storageraw_${path.identifier}`}>

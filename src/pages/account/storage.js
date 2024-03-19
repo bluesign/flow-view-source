@@ -21,6 +21,9 @@ import {CardActionArea, Link} from "@mui/material"
 import {Muted} from "../../comps/text"
 import * as React from "react"
 import Stack from "@mui/material/Stack"
+import { CardActionArea } from '@mui/material';
+import { Muted } from "../../comps/text"
+import {getNetworkFromAddress} from "../../util/address.util"
 
 const style = {
   heading: {
@@ -301,36 +304,31 @@ export function Content() {
   const {address, domain, path, uuid} = useParams()
   const [storage, setStorage] = useState(null)
   const [storageRaw, setStorageRaw] = useState(null)
+  
+  var authAccountCall = "getAuthAccount(address)"
+  if (getNetworkFromAddress(address)=="previewnet"){
+    authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
+  }
 
   useEffect(() => {
     setStorage(null)
     setStorageRaw(null)
 
     async function browseStorage(path) {
-      fcl.send([fcl.script(`
-                 import MetadataViews from 0xMetadataViews
+      
+      var cadence = `
+        import FDNZ from 0xFDNZ          
+        access(all) fun main(address: Address, path: String) : AnyStruct{
+          return FDNZ.getAccountStorage(${authAccountCall}, path: path)
+        }          
+      `
 
-                  pub fun main(address: Address, path: String) : AnyStruct{
-                    var obj = getAuthAccount(address).borrow<auth &AnyResource>(from: StoragePath(identifier: path)!)!
-                    var meta = obj as? &AnyResource{MetadataViews.ResolverCollection}
 
-                    if meta!=nil && meta!.getIDs().length>0{
-                      var res : {UInt64:AnyStruct} = {}
-                      for id in meta!.getIDs(){
-                        res[id] = meta!.borrowViewResolver(id:id).resolveView(Type<MetadataViews.Display>())!
-                      }
-                      return res
-
-                    }
-                    else{
-                      var col = getAuthAccount(address).borrow<&AnyResource>(from: StoragePath(identifier: path)!)! as AnyStruct
-                      return col
-                      
-                    }
-                    
-                  }
-                  
-                `), fcl.args([fcl.arg(address, t.Address), fcl.arg(path, t.String)])]).then((v) => {
+      fcl.send([fcl.script(cadence),
+      fcl.args(
+        [fcl.arg(address, t.Address), fcl.arg(path, t.String)]
+      )]
+      ).then((v) => {
         setStorage(cadenceValueToDict(v.encodedData, true))
         setStorageRaw(cadenceValueToDict(v.encodedData, false))
 
@@ -339,34 +337,21 @@ export function Content() {
 
     async function browseNFT(path, uuid) {
       fcl.send([fcl.script(`
-                   import MetadataViews from 0xMetadataViews
-  
-                    pub fun main(address: Address, path: String, uuid: UInt64) : AnyStruct{
-                      var obj = getAuthAccount(address).borrow<auth &AnyResource>(from: StoragePath(identifier: path)!)!
-                      var meta = obj as? &AnyResource{MetadataViews.ResolverCollection}
-  
-                        var res : {String:AnyStruct} = {}
-                        
-                        var vr = meta?.borrowViewResolver(id:uuid)
-                        if let views = vr?.getViews(){
-
-                        for mdtype in views{
-
-                          if mdtype==Type<MetadataViews.NFTView>() {
-                            continue
-                          }
-                          if mdtype==Type<MetadataViews.NFTCollectionData>() {
-                            continue
-                          }
-
-                          res[mdtype.identifier]=vr?.resolveView(mdtype)
-                        }
-                      }
-  
-                        return res
-                    }
-                    
-                  `), fcl.args([fcl.arg(address, t.Address), fcl.arg(path, t.String), fcl.arg(uuid, t.UInt64)])]).then((v) => {
+        import FDNZ from 0xFDNZ
+        access(all) fun main(address: Address, path:String, uuid:UInt64) : [{String:AnyStruct}]{
+          return FDNZ.getAccountStorageNFT(
+            ${authAccountCall}, 
+            path: path,
+            uuid: uuid
+          )
+        }
+ 
+      `),
+      
+        fcl.args(
+        [fcl.arg(address, t.Address), fcl.arg(path, t.String), fcl.arg(uuid, t.UInt64)]
+      )]
+      ).then((v) => {
         setStorage(cadenceValueToDict(v.encodedData, true))
         setStorageRaw(cadenceValueToDict(v.encodedData, false))
 
@@ -375,23 +360,16 @@ export function Content() {
 
     async function browseLink(domain, path) {
       fcl.send([fcl.script(`
-
-                  pub fun main(address: Address) : [{String:AnyStruct}]{
-                    var res :  [{String:AnyStruct}] = []
-                    getAuthAccount(address).forEach${domain}(fun (path: ${domain}Path, type: Type): Bool {
-                     
-                      res.append( {
-                        "path" : path,
-                        "borrowType" : type, 
-                        "target" : getAuthAccount(address).getLinkTarget(path)
-                      })
-                      
-                      return true
-                    })           
-                    
-                    return res
-                  }
-                `), fcl.args([fcl.arg(address, t.Address)])]).then((v) => {
+        import FDNZ from 0xFDNZ
+        access(all) fun main(address: Address) : [{String:AnyStruct}]{
+          return FDNZ.getAccountLinks(${authAccountCall}, domain: "${domain}")
+        }
+      `),
+      
+        fcl.args(
+        [fcl.arg(address, t.Address)]
+      )]
+      ).then((v) => {
         setStorage(cadenceValueToDict(v.encodedData, false))
         setStorageRaw(cadenceValueToDict(v.encodedData, false))
 
@@ -406,8 +384,8 @@ export function Content() {
         browseNFT(path, uuid)
       }
     }
-    if (domain === "public") browseLink("Public", path)
-    if (domain === "private") browseLink("Private", path)
+    if (domain === "public") browseLink("public", path)
+    if (domain === "private") browseLink("private", path)
 
 
   }, [path, address, domain, uuid])
@@ -443,6 +421,17 @@ export function Content() {
               </Typography>
               <Typography component="p" variant="body2">
                 <Icon icon="solid fa-crosshairs" />
+            <div>
+              {link &&
+                <Group icon="link" title={link.path}>
+                  <Item icon="text">{link.borrowType}</Item>
+                  {link.target!="" &&
+                    <Item icon="crosshairs">{link.target}</Item>
+                  }
+                </Group>
+              }
+              <br />
+            </div>
 
                 { link.target && <Link
                   to={storageUrl(address, link.target.split("/")[0], link.target.split("/")[1])}>{link.target}</Link> }

@@ -57,10 +57,11 @@ const parityCheckMatrixColumns = [
 const NETWORK_CODEWORDS = {
   "mainnet": BigInt(0),
   "testnet": BigInt("0x6834ba37b3980209"),
-  "emulator": BigInt("0x1cb159857af02018")
+  "emulator": BigInt("0x1cb159857af02018"),
+  "previewnet": BigInt("0x5211829E88528817"),
 }
 
-const NETWORKS = new Set(["mainnet", "testnet"])
+const NETWORKS = new Set(["mainnet", "testnet","previewnet"])
 
 export function getNetworkFromAddress(address){
   var result = null;
