@@ -225,7 +225,7 @@ export function AccountSideBar() {
             Public
           </Button>
 
-
+          { getNetworkFromAddress(address)!=="previewnet" &&
           <Button
             color={"gray"}
             size="medium"
@@ -237,6 +237,7 @@ export function AccountSideBar() {
           >
             Private
           </Button>
+          }
 
 
 

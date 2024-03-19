@@ -59,9 +59,13 @@ export function TxStatus() {
             await fcl.send([fcl.getTransaction(txId)]).then(fcl.decode).then(setTxInfo)
         }
         catch{
+          if (network==="testnet"){
+            setNetwork("previewnet")
+          }
           if (network==="mainnet"){
             setNetwork("testnet")
           }
+
         }
     }
     getTxStatus(txId)

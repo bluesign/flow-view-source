@@ -336,7 +336,7 @@ export function Content() {
     async function browseNFT(path, uuid) {
       fcl.send([fcl.script(`
         import FDNZ from 0xFDNZ
-        access(all) fun main(address: Address, path:String, uuid:UInt64) : [{String:AnyStruct}]{
+        access(all) fun main(address: Address, path:String, uuid:UInt64) : AnyStruct{
           return FDNZ.getAccountStorageNFT(
             ${authAccountCall}, 
             path: path,

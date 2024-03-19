@@ -13,9 +13,9 @@ export const extractName = (address) => {
 
 export const findAddress = async (address) => {
   const code = `
-   // import FIND from 0xFIND
+   import FIND from 0xFIND
     access(all) fun main(name: String): Address? {
-        return nil //FIND.lookupAddress(name)
+        return FIND.lookupAddress(name)
     }
   `;
   const name = extractName(address);
