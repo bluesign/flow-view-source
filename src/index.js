@@ -23,7 +23,6 @@ import '@fontsource/roboto/700.css';
 
 import WebFont from 'webfontloader';
 import {createGlobalStyle} from "styled-components"
-import {getCookie} from "react-use-cookie"
 
 
 export const GlobalStyles = createGlobalStyle`

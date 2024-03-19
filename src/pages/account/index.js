@@ -248,18 +248,6 @@ export function AccountSideBar() {
         <Typography component="p" variant="body2" sx={{paddingBottom:1}}>
           <b>Storage </b>  &nbsp; {storageCapacity(accountStorage)} Capacity
         </Typography>
-      <Group icon="link" title={`Links`} >
-          <Item icon="link" key="Public"  as={Link} to={storageUrl(address, "public", "list")}>
-          Public
-          </Item>
-        {(getNetworkFromAddress(address)!=="previewnet") &&
-    
-          <Item icon="link" key="Private"  as={Link} to={storageUrl(address, "private", "list")}>
-          Private
-          </Item>
-        }
-    
-    </Group>
 
         {accountStorage && accountStorage?.paths.map(path => (
           <div  key={`storageraw_${path.identifier}`}>

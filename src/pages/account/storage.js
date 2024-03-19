@@ -21,8 +21,6 @@ import {CardActionArea, Link} from "@mui/material"
 import {Muted} from "../../comps/text"
 import * as React from "react"
 import Stack from "@mui/material/Stack"
-import { CardActionArea } from '@mui/material';
-import { Muted } from "../../comps/text"
 import {getNetworkFromAddress} from "../../util/address.util"
 
 const style = {
@@ -419,24 +417,16 @@ export function Content() {
                 <Muted>{link.borrowType}</Muted>
 
               </Typography>
+              
+              { link.target!="" && 
               <Typography component="p" variant="body2">
                 <Icon icon="solid fa-crosshairs" />
-            <div>
-              {link &&
-                <Group icon="link" title={link.path}>
-                  <Item icon="text">{link.borrowType}</Item>
-                  {link.target!="" &&
-                    <Item icon="crosshairs">{link.target}</Item>
-                  }
-                </Group>
-              }
-              <br />
-            </div>
 
-                { link.target && <Link
+                { link.target!="" && <Link
                   to={storageUrl(address, link.target.split("/")[0], link.target.split("/")[1])}>{link.target}</Link> }
 
               </Typography>
+              }
             </Typography>}
             <br />
           </div>)}
