@@ -9,7 +9,7 @@ import {useCurrentUser} from "../../hooks/use-current-user"
 import {useNetworkForAddress } from "../../hooks/use-network";
 import {withPrefix} from "../../util/address.util"
 import {getNetworkFromAddress} from "../../util/address.util"
-import {contractUrl, storageUrl, Icon, accountUrl} from "../../comps/base"
+import {contractUrl, storageUrlRaw, storageUrl, Icon, accountUrl} from "../../comps/base"
 import {Keys} from "./keys"
 import { Content as Contracts } from "./contract";
 import Page from "../../comps/page"
@@ -250,7 +250,7 @@ export function AccountSideBar() {
           <b>Storage </b>  &nbsp; {storageCapacity(accountStorage)} Capacity
         </Typography>
 
-        {accountStorage && accountStorage?.paths.map(path => (
+        {accountStorage && accountStorage?.paths.sort(function compareFn(a, b) { return a.identifier < b.identifier}).map(path => (
           <div  key={`storageraw_${path.identifier}`}>
           <Button
             color={"gray"}
@@ -258,15 +258,13 @@ export function AccountSideBar() {
             fullWidth={true}
             variant="text"
             startIcon={<Icon icon="solid fa-folder"/>}
-            to={storageUrl(address, path.domain, path.identifier)}
+            to={storageUrlRaw(address, path.domain, path.identifier)}
             sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0,marginLeft: 1 }}}
           >
             {path.identifier}
           </Button>
           </div>
         ))}
-
-
 
       </Box>
 

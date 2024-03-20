@@ -49,6 +49,7 @@ export const Icon = ({icon}) => <BaseIcon className={`fa-${icon}`} ></BaseIcon>
 export const accountUrl = (addr) => `/${withPrefix(addr)}`
 export const keysUrl = (addr) => `/${withPrefix(addr)}/keys`
 export const contractUrl = (addr, name) => `${accountUrl(addr)}/${name}`
+export const storageUrlRaw = (addr, domain, name) => `${accountUrl(addr)}/raw/${domain}/${name.replace("/","\\")}`
 export const storageUrl = (addr, domain, name) => `${accountUrl(addr)}/${domain}/${name.replace("/","\\")}`
 export const nftUrl = (addr, domain, name, id) => `${accountUrl(addr)}/${domain}/${name.replace("/","\\")}/${id}`
 

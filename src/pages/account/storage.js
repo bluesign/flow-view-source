@@ -285,7 +285,10 @@ function Traits({view}) {
         <Icon icon="solid fa-bars" /> Traits
       </Typography>
       {view["traits"] && view["traits"].map(trait => {
-        const value = trait["MetadataViews.Trait"]["value"].toString()
+        var value = trait["MetadataViews.Trait"]["value"] 
+        if (value){
+          value = value.toString()
+        }
         const name = trait["MetadataViews.Trait"]["name"]
 
         return (<div>{name}:&nbsp;<Muted title={value}>{value}</Muted></div>)
@@ -299,7 +302,7 @@ function Traits({view}) {
 }
 
 export function Content() {
-  const {address, domain, path, uuid} = useParams()
+  const {address, domain, path, uuid, raw} = useParams()
   const [storage, setStorage] = useState(null)
   const [storageRaw, setStorageRaw] = useState(null)
   
@@ -307,6 +310,7 @@ export function Content() {
   if (getNetworkFromAddress(address)=="previewnet"){
     authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
   }
+  const isRaw = raw == "raw"
 
   useEffect(() => {
     setStorage(null)
@@ -317,7 +321,7 @@ export function Content() {
       var cadence = `
         import FDNZ from 0xFDNZ          
         access(all) fun main(address: Address, path: String) : AnyStruct{
-          return FDNZ.getAccountStorage(${authAccountCall}, path: path)
+          return FDNZ.getAccountStorage${isRaw?"Raw":""}(${authAccountCall}, path: path)
         }          
       `
 
@@ -418,14 +422,14 @@ export function Content() {
 
               </Typography>
               
-              { link.target!="" && 
+              { link.target && link.target!="" && 
               <Typography component="p" variant="body2">
                 <Icon icon="solid fa-crosshairs" />
 
-                { link.target!="" && <Link
+                { link.target && link.target.split("/").length==2 && link.target!="" && <Link
                   to={storageUrl(address, link.target.split("/")[0], link.target.split("/")[1])}>{link.target}</Link> }
-
-              </Typography>
+              
+                </Typography>
               }
             </Typography>}
             <br />
@@ -452,7 +456,7 @@ export function Content() {
       </Box>
     </div>}
 
-    {uuid == null && !hasCustomDisplay && storage && (domain === "storage") &&
+    {uuid == null && (!hasCustomDisplay || isRaw) && storage && (domain === "storage") &&
       <CodeEditor key="storage" prefix={domain} type="" index={0} code={storageRaw} lang="json" />}
 
   </Box>)
