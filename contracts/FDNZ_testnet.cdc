@@ -1,6 +1,7 @@
 import NonFungibleToken from 0x631e88ae7f1d7c20
 import FungibleToken from 0x9a0766d93b6608b7
 import MetadataViews from 0x631e88ae7f1d7c20
+import MigrationContractStaging from 0x2ceae959ed1a7e7a
 
 pub contract FDNZ{
     
@@ -68,6 +69,7 @@ pub contract FDNZ{
             return res
         }
         else{
+
             var col = account.borrow<&AnyResource>(from: StoragePath(identifier: path)!)! as AnyStruct
             return col
         }
@@ -83,59 +85,64 @@ pub contract FDNZ{
     
     access(all) fun getAccountData(_ account:AuthAccount):{String:AnyStruct}{
         
-            var paths: [Path] = []
-            var privatePaths: [Path] = []
-            var publicPaths: [Path] = []
-            var nft : [AnyStruct] = []
-            var ft : [AnyStruct] = []
-            
+             var paths: [Path] = []
+                        var privatePaths: [Path] = []
+                        var publicPaths: [Path] = []
+                        var nft : [AnyStruct] = []
+                        var ft : [AnyStruct] = []
+                        var staged : [AnyStruct] = []
 
-            account.forEachStored(fun (path: StoragePath, type: Type): Bool {
-                if type.isSubtype(of: Type<@NonFungibleToken.Collection>()){
-                    var collection = account.borrow<&NonFungibleToken.Collection>(from:path)!
-                    nft.append({"path":path, "count":collection.getIDs().length})
-                    paths.append(path)
-                }
-                else if type.isSubtype(of: Type<@FungibleToken.Vault>()){
-                    var vault = account.borrow<&FungibleToken.Vault>(from:path)!
-                    ft.append({"path":path, "balance":vault.balance})
-                    paths.append(path)
-                }
-                else{
-                    paths.append(path)
-                }
-                return true
-            })
+                        account.forEachStored(fun (path: StoragePath, type: Type): Bool {
 
-            account.forEachPublic(fun (path: PublicPath, type: Type): Bool {
-                publicPaths.append(path)
-                return true
-            })
+                            if type.isSubtype(of: Type<@NonFungibleToken.Collection>()){
+                                var collection = account.borrow<&NonFungibleToken.Collection>(from:path)!
+                                nft.append({"path":path, "count":collection.getIDs().length})
+                                paths.append(path)
+                            }
+                            else if type.isSubtype(of: Type<@FungibleToken.Vault>()){
+                                var vault = account.borrow<&FungibleToken.Vault>(from:path)!
+                                ft.append({"path":path, "balance":vault.balance})
+                                paths.append(path)
+                            }
+                            else if type.isSubtype(of:  Type<@MigrationContractStaging.Capsule>()){
+                                var capsule = account.borrow<&MigrationContractStaging.Capsule>(from: path)
+                                staged.append({"path": path})
+                           }
+                            else{
+                                paths.append(path)
+                            }
+                            return true
+                        })
 
-            account.forEachPrivate(fun (path: PrivatePath, type: Type): Bool {
-                privatePaths.append(path)
-                return true
-            })
+                        account.forEachPublic(fun (path: PublicPath, type: Type): Bool {
+                            publicPaths.append(path)
+                            return true
+                        })
+
+                        account.forEachPrivate(fun (path: PrivatePath, type: Type): Bool {
+                            privatePaths.append(path)
+                            return true
+                        })
 
 
-            let response: {String: AnyStruct} = {}
-            
-            //find profile
-            var findProfile = account.borrow<&AnyResource>(from:/storage/findProfile)
-            response["find"] = findProfile  
-            response["capacity"] = account.storageCapacity
-            response["used"] = account.storageUsed
-            response["available"]  = 0
-            response["paths"] = paths
-            response["public"] = publicPaths
-            response["private"] = privatePaths
-            response["nft"] = nft 
-            response["ft"] = ft
+                        let response: {String: AnyStruct} = {}
 
-            if account.storageCapacity>account.storageUsed{
-            response["available"] = account.storageCapacity - account.storageUsed
-            }
-            return response
-        }
-    
+                        //find profile
+                        var findProfile = account.borrow<&AnyResource>(from:/storage/findProfile)
+                        response["find"] = findProfile
+                        response["capacity"] = account.storageCapacity
+                        response["used"] = account.storageUsed
+                        response["available"]  = 0
+                        response["paths"] = paths
+                        response["public"] = publicPaths
+                        response["private"] = privatePaths
+                        response["nft"] = nft
+                        response["ft"] = ft
+                        response["staged"] = staged
+
+                        if account.storageCapacity>account.storageUsed{
+                        response["available"] = account.storageCapacity - account.storageUsed
+                        }
+                        return response
+    }
 }

@@ -14,7 +14,7 @@ import dedent from "dedent";
 import { extractTransactionArguments } from "@onflow/flow-cadut"
 import {Suspense} from "react"
 
-import { getNetworkConfig } from "../hooks/use-network"
+import { getNetworkConfig } from "../config.js"
 import CodeEditor from "../comps/editor"
 import Page from '../comps/page'
 import {Group, AccountAddress, Item, Scroll} from "../comps/base"
@@ -23,17 +23,9 @@ import {H5, Muted, Pre} from "../comps/text"
 import {cadenceValueToDict, fmtTransactionStatus} from "../util/fmt-flow.util"
 
 import dateFormat from "dateformat";
-import Card from "@mui/material/Card"
 import Typography from "@mui/material/Typography"
 import {
-  AppBlocking,
-  BlockOutlined,
-  CountertopsSharp,
-  Fingerprint, HeightOutlined, KeyboardOptionKey,
-  LinkedIn,
-  LinkSharp,
-  LockClock,
-  PunchClock,
+  Fingerprint, HeightOutlined,
   TimelapseSharp,
 } from "@mui/icons-material"
 

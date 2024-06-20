@@ -1,29 +1,20 @@
-import React, {useEffect} from "react"
+import React from "react"
 import ReactDOM from "react-dom"
 import * as fcl from "@onflow/fcl"
 import {RecoilRoot} from "recoil"
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
-import CssBaseline from '@mui/material/CssBaseline';
-
 import Account from "./pages/account"
 import Find from "./util/find"
-
 import AccountContractNew from "./pages/account/contract-new"
 import {TxStatus} from "./pages/tx-status"
-
 import Page from "./comps/page"
-
-import {ThemeProvider, createTheme, alpha} from "@mui/material/styles"
-import { getNetworkConfig } from "./hooks/use-network"
-
+import { getNetworkConfig } from "./config"
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-
 import WebFont from 'webfontloader';
 import {createGlobalStyle} from "styled-components"
-
 
 export const GlobalStyles = createGlobalStyle`
   :root {
@@ -52,8 +43,6 @@ export const GlobalStyles = createGlobalStyle`
   }
 `
 
-
-
 window.fcl = fcl
 window.t = fcl.t
 window.query = fcl.query
@@ -74,7 +63,6 @@ export function NoMatch() {
      <Page />
    )
  }
-
   WebFont.load({
     google: {
       families: ['Inter']

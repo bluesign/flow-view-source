@@ -51,7 +51,21 @@ export function AccountSideBar() {
   const [expanded, setExpanded] = React.useState("");
 
   const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(address)
- 
+
+    if  (accountStorage?.staged){
+      accountStorage?.staged.forEach(element=>{
+      var parts = element.path.identifier.split("_");
+      element.address = parts[2];
+      element.name = parts[3];
+    });
+
+      accountStorage?.staged.sort((a, b) => {
+        if (a.address+"_"+a.name > b.address+"_"+b.name) return 1;
+        if (a.address+"_"+a.name < b.address+"_"+b.name) return -1;
+        return 0;
+      })
+    }
+
   accountStorage?.nft.sort((a, b) => {
     if(parseInt(a.count) < parseInt(b.count)) return 1;
     if(parseInt(a.count) > parseInt(b.count)) return -1;
@@ -75,6 +89,16 @@ export function AccountSideBar() {
       setExpanded(isExpanded ? panel : false);
     };
 
+    var lastAddress = ""
+
+  var checkSameAddress = ((address)=>{
+    if (address==lastAddress){
+      return false
+    }else{
+      lastAddress = address
+      return true
+    }
+  })
 
   return (
     <SideBar>
@@ -90,7 +114,40 @@ export function AccountSideBar() {
 
       </Box>
 
-        {accountStorage && accountStorage?.find &&
+
+      {accountStorage && accountStorage?.staged  &&
+      <Box>
+
+        <Typography component="p" variant="body2">
+          <b>Staged Contracts</b>
+        </Typography>
+
+        {accountStorage && accountStorage?.staged.map(staged => (
+          <div key={`staged_${staged.name}_${staged.address}`}>
+            {checkSameAddress(staged.address)&&
+              <Typography component="p" variant="body2">
+                &nbsp;{staged.address}
+              </Typography>
+            }
+
+            <Button
+              color={"gray"}
+              size="medium"
+              fullWidth={true}
+              variant="text"
+              startIcon={<Icon icon="solid fa-file"/>}
+              to={contractUrl( address, staged.address + "_" + staged.name)}
+              sx={{justifyContent: "flex-start", padding:0, "& .MuiButton-startIcon": { marginRight: 0,marginLeft: 1 }}}
+            >
+               {staged.name}
+            </Button>
+          </div>))
+        }
+      </Box>
+      }
+
+
+      {accountStorage && accountStorage?.find &&
           <Box>
 
             <Typography component="p" variant="body2" sx={{paddingBottom:1}}>

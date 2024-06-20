@@ -18,6 +18,12 @@ import {Roll} from "../../comps/text"
 import {sansPrefix, withPrefix} from "../../util/address.util"
 
 import {extractContractName} from "@onflow/flow-cadut"
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {cadenceValueToDict} from "../../util/fmt-flow.util"
 
 const fabStyle = {
   position: 'absolute',
@@ -94,16 +100,72 @@ export function Content() {
   const contracts = useMemo(() => acct?.contracts ?? {}, [acct])
   const user = useCurrentUser()
   const IS_CURRENT_USER = withPrefix(user.addr) === withPrefix(address)
-  const [code, setCode] = useState(contracts[name])
+  const [code, setCode] = useState(null)
+  const [data, setData] = useState(null)
 
-  useEffect(() => {
-    setCode(contracts[name])
-  }, [name, contracts])
+  useEffect(()=> {
+    setCode("")
+    if (name.indexOf("_")>-1){
+  
+      var authAccountCall = "getAuthAccount(address)";
+      var isRaw=true;
+      var path = "MigrationContractStagingCapsule_0x2ceae959ed1a7e7a_" + name;
+      //check staged 
+      var cadence = `
+        import FDNZ from 0xFDNZ          
+        access(all) fun main(address: Address, path: String) : AnyStruct{
+          return FDNZ.getAccountStorage${isRaw?"Raw":""}(${authAccountCall}, path: path)
+        }          
+      `
+
+      fcl.send([fcl.script(cadence),
+      fcl.args(
+        [fcl.arg(address, t.Address), fcl.arg(path, t.String)]
+      )]
+      ).then((v) => {
+          var data = cadenceValueToDict(v.encodedData, false)
+          console.log(data)    
+          var code = data["A.2ceae959ed1a7e7a.MigrationContractStaging.Capsule"]["update"]["A.2ceae959ed1a7e7a.MigrationContractStaging.ContractUpdate"]["code"]
+          setCode(code)
+      }).catch(()=>{})
+ 
+    }else{
+
+       var cadence = `
+        access(all) fun main(address: Address, name: String) : AnyStruct{
+          return String.fromUTF8(getAccount(address).contracts.get(name:name)!.code)
+        }          
+      `
+
+      fcl.send([fcl.script(cadence),
+      fcl.args(
+        [fcl.arg(address, t.Address), fcl.arg(name, t.String)]
+      )]
+      ).then((v) => {
+          var data = cadenceValueToDict(v.encodedData, false)
+            setCode(data)
+
+      }).catch(()=>{})
+
+    }
+  
+  }, [name])
+
+
 
   return (
     <Box>
       <Footer acct={acct} address={address} name={name} code={code} isCurrentUser={IS_CURRENT_USER}/>
+      <Accordion padding={0} disableGutters>
+
+        <AccordionDetails>
+          {data}
+        </AccordionDetails>
+      </Accordion>
+
       <CodeEditor key={name} code={code}  name={name} onChange={IS_CURRENT_USER?setCode:null} lang="cadence" />
+
+
     </Box>
   )
 }
