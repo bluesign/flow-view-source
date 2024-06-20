@@ -54,9 +54,10 @@ export function AccountSideBar() {
 
     if  (accountStorage?.staged){
       accountStorage?.staged.forEach(element=>{
+      console.log(element.path)
       var parts = element.path.identifier.split("_");
       element.address = parts[2];
-      element.name = parts[3];
+      element.name = parts.slice(3, parts.length).join("_");
     });
 
       accountStorage?.staged.sort((a, b) => {
