@@ -45,14 +45,17 @@ export function useAccount(address) {
     authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
   }
  
-
+  var contractName = "FDNZ"
+  if (getNetworkFromAddress(address)=="testnet"){
+    contractName = "FDNZ1"
+  }
   useEffect(()=>{
     if (!$data) return 
 
     var cadenceCode = `  
-      import FDNZ from 0xFDNZ
+      import ${contractName} from 0xFDNZ
       access(all) fun main(address: Address):  AnyStruct{
-        return FDNZ.getAccountData(${authAccountCall})    
+        return ${contractName}.getAccountData(${authAccountCall})    
       }
     `
     fcl

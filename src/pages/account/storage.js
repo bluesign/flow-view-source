@@ -310,6 +310,11 @@ export function Content() {
   if (getNetworkFromAddress(address)=="previewnet"){
     authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
   }
+  var contractName = "FDNZ"
+  if (getNetworkFromAddress(address)=="testnet"){
+    contractName = "FDNZ1"
+  }
+
   const isRaw = raw == "raw"
 
   useEffect(() => {
@@ -319,7 +324,7 @@ export function Content() {
     async function browseStorage(path) {
       
       var cadence = `
-        import FDNZ from 0xFDNZ          
+        import ${contractName} from 0xFDNZ          
         access(all) fun main(address: Address, path: String) : AnyStruct{
           return FDNZ.getAccountStorage${isRaw?"Raw":""}(${authAccountCall}, path: path)
         }          
@@ -339,9 +344,9 @@ export function Content() {
 
     async function browseNFT(path, uuid) {
       fcl.send([fcl.script(`
-        import FDNZ from 0xFDNZ
+        import ${contractName} from 0xFDNZ
         access(all) fun main(address: Address, path:String, uuid:UInt64) : AnyStruct{
-          return FDNZ.getAccountStorageNFT(
+          return ${contractName}.getAccountStorageNFT(
             ${authAccountCall}, 
             path: path,
             uuid: uuid
@@ -362,9 +367,9 @@ export function Content() {
 
     async function browseLink(domain, path) {
       fcl.send([fcl.script(`
-        import FDNZ from 0xFDNZ
+        import ${contractName} from 0xFDNZ
         access(all) fun main(address: Address) : [{String:AnyStruct}]{
-          return FDNZ.getAccountLinks(${authAccountCall}, domain: "${domain}")
+          return ${contractName}.getAccountLinks(${authAccountCall}, domain: "${domain}")
         }
       `),
       
