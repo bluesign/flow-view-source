@@ -109,7 +109,7 @@ export function Content() {
   
       var authAccountCall = "getAuthAccount(address)";
       var isRaw=true;
-      var path = "MigrationContractStagingCapsule_0x2ceae959ed1a7e7a_" + name;
+      var path = "MigrationContractStagingCapsule_0x56100d46aa9b0212_" + name;
       //check staged 
       var cadence = `
         import FDNZ from 0xFDNZ          
@@ -125,7 +125,7 @@ export function Content() {
       ).then((v) => {
           var data = cadenceValueToDict(v.encodedData, false)
           console.log(data)    
-          var code = data["A.2ceae959ed1a7e7a.MigrationContractStaging.Capsule"]["update"]["A.2ceae959ed1a7e7a.MigrationContractStaging.ContractUpdate"]["code"]
+          var code = data["A.56100d46aa9b0212.MigrationContractStaging.Capsule"]["update"]["A.56100d46aa9b0212.MigrationContractStaging.ContractUpdate"]["code"]
           setCode(code)
       }).catch(()=>{})
  
