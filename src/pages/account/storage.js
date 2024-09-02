@@ -305,17 +305,15 @@ export function Content() {
   const {address, domain, path, uuid, raw} = useParams()
   const [storage, setStorage] = useState(null)
   const [storageRaw, setStorageRaw] = useState(null)
-  
-  var authAccountCall = "getAuthAccount(address)"
-  if (getNetworkFromAddress(address)=="previewnet"){
-    authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
-  }
+
   var contractName = "FDNZ"
-  if (getNetworkFromAddress(address)=="testnet"){
+  var authAccountCall = "getAuthAccount(address)"
+  if (getNetworkFromAddress(address)==="previewnet" || getNetworkFromAddress(address)==="testnet"){
+    authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
     contractName = "FDNZ1"
   }
 
-  const isRaw = raw == "raw"
+  const isRaw = raw === "raw"
 
   useEffect(() => {
     setStorage(null)
@@ -326,7 +324,7 @@ export function Content() {
       var cadence = `
         import ${contractName} from 0xFDNZ          
         access(all) fun main(address: Address, path: String) : AnyStruct{
-          return FDNZ.getAccountStorage${isRaw?"Raw":""}(${authAccountCall}, path: path)
+          return ${contractName}.getAccountStorage${isRaw?"Raw":""}(${authAccountCall}, path: path)
         }          
       `
 

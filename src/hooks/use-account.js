@@ -40,15 +40,14 @@ export function useAccount(address) {
   const [storage, setStorage] = useState(null)
   const [count, setCount] = useState("true")
 
-  var authAccountCall = "getAuthAccount(address)"
-  if (getNetworkFromAddress(address)=="previewnet"){
-    authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
-  }
- 
   var contractName = "FDNZ"
-  if (getNetworkFromAddress(address)=="testnet"){
+  var authAccountCall = "getAuthAccount(address)"
+  if (getNetworkFromAddress(address)==="previewnet" || getNetworkFromAddress(address)==="testnet"){
+    authAccountCall = "getAuthAccount<auth(Storage) &Account>(address)"
     contractName = "FDNZ1"
   }
+ 
+
   useEffect(()=>{
     if (!$data) return 
 
